@@ -23,22 +23,22 @@ echo -e "*************************\n"
 
 echo "Requirements Table1_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table1_5.rt -o src/main/resources/Table1_5.py -e BeUfFs -t consistency -b 33 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table1_5.py
+timeout 10 python src/main/resources/Table1_5.py
 sleep 2
 
 echo "Requirements Table2_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table2_5.rt -o src/main/resources/Table2_5.py -e BeUfFs -t consistency -b 33 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table2_5.py
+timeout 10 python src/main/resources/Table2_5.py
 sleep 2
 
 echo "Requirements Table3_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table3_5.rt -o src/main/resources/Table3_5.py -e BeUfFs -t consistency -b 33 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table3_5.py
+timeout 10 python src/main/resources/Table3_5.py
 sleep 2
 
 echo "Requirements Table4_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table4_5.rt -o src/main/resources/Table4_5.py -e BeUfFs -t consistency -b 33 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table4_5.py
+timeout 10 python src/main/resources/Table4_5.py
 sleep 2
 
 echo -e "\n\n*************************"
@@ -47,20 +47,20 @@ echo -e "*************************\n"
 
 echo "Requirements Table1_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table1_5.rt -o src/main/resources/Table1_5.py -e BeUfVs -t completeness -b 6 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table1_5.py
+timeout 10 python src/main/resources/Table1_5.py
 sleep 2
 
 echo "Requirements Table2_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table2_5.rt -o src/main/resources/Table2_5.py -e BeUfVs -t completeness -b 6 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table2_5.py
+timeout 10 python src/main/resources/Table2_5.py
 sleep 2
 
 echo "Requirements Table3_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table3_5.rt -o src/main/resources/Table3_5.py -e BeUfVs -t completeness -b 6 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table3_5.py
+timeout 10 python src/main/resources/Table3_5.py
 sleep 2
 
 echo "Requirements Table4_5"
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/Table4_5.rt -o src/main/resources/Table4_5.py -e BeUfVs -t completeness -b 6 > /dev/null 2>&1
-timeout 15 python src/main/resources/Table4_5.py
+timeout 10 python src/main/resources/Table4_5.py
 sleep 2
