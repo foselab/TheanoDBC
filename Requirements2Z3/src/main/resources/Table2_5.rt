@@ -5,5 +5,5 @@ endvardef
 reqdef
   isStartup, y == 0;
   !isStartup, y == prev(y) + 1;
-  !isStartup & prev(y) == 5, y < 5;
+  (!isStartup) & (prev(y) == 5), y < 5;
 endreqdef

@@ -22,7 +22,7 @@ Table1_5.py
 Theano.jar
 SimulinkExamples/slprj/*
 Table1.rt
-Table1.py
+Requirements2Z3/src/main/resources/*.py
 .venv
 .vsWorkspace/
 Workspace/*
