@@ -1,0 +1,11 @@
+vardef
+  sp,Real,input;
+  spt,Real,input;
+  brake,Real,input;
+  thr,Real,output;
+endvardef
+reqdef
+  (brake<=0)&(sp<spt),thr>0;
+  (brake<=0)&(sp>=spt),thr==0;
+  brake>0,thr==0;
+endreqdef
