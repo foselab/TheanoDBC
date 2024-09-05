@@ -22,40 +22,40 @@ rm -f src/main/resources/*.py
 
 echo -e "\nRequirements TableAM_01_Car"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeArFs -t completeness -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_03_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeArFs -t consistency -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_03_consistency.py
 sleep 2
 
 echo -e "\nRequirements TableAM_02_Car"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_completeness.py -e BeArFs -t completeness -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_02_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_consistency.py -e BeArFs -t consistency -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_02_consistency.py
 
 echo -e "\nRequirements TableAM_03_Car"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeArFs -t completeness -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_03_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeArFs -t consistency -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_03_consistency.py
 sleep 2
 
 echo -e "\nRequirements TableAM_03_Controller"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_completeness.py -e BeArFs -t completeness -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_04_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_consistency.py -e BeArFs -t consistency -b 6 > /dev/null 2>&1
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
 timeout 10 python src/main/resources/TableAM_04_consistency.py
 sleep 2
 

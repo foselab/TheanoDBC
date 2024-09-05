@@ -1,11 +1,10 @@
 vardef
   sp,Real,input;
-  spt,Real,input;
-  brake,Real,input;
-  thr,Real,output;
+  st,Real,input;
+  br,Real,input;
+  th,Real,output;
 endvardef
 reqdef
-  (brake<=0)&(sp<spt),thr>0;
-  (brake<=0)&(sp>=spt),thr==0;
-  brake>0,thr==0;
+  (br<=0)&(sp<st),th>0;
+  (br>0)|(sp>=st),th==0;
 endreqdef
