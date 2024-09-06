@@ -20,43 +20,43 @@ MAIN_CLASS="requirements2Z3.Main"
 # Remove python files
 rm -f src/main/resources/*.py
 
-echo -e "\nRequirements TableAM_01_Car"
+echo -e "\nRequirements TableCar_v1"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_03_completeness.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v1.rt -o src/main/resources/TableCar_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v1_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_01_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_03_consistency.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v1.rt -o src/main/resources/TableCar_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v1_consistency.py
 sleep 2
 
-echo -e "\nRequirements TableAM_02_Car"
+echo -e "\nRequirements TableCar_v2"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_02_completeness.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v2.rt -o src/main/resources/TableCar_v2_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v2_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_02_Car.rt -o src/main/resources/TableAM_02_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_02_consistency.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v2.rt -o src/main/resources/TableCar_v2_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v2_consistency.py
 
-echo -e "\nRequirements TableAM_03_Car"
+echo -e "\nRequirements TableCar_v3"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_03_completeness.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v3.rt -o src/main/resources/TableCar_v3_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v3_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Car.rt -o src/main/resources/TableAM_03_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_03_consistency.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v3.rt -o src/main/resources/TableCar_v3_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableCar_v3_consistency.py
 sleep 2
 
-echo -e "\nRequirements TableAM_03_Controller"
+echo -e "\nRequirements TableController_v1"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_04_completeness.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableController_v1.rt -o src/main/resources/TableController_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableController_v1_completeness.py
 sleep 2
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableAM_03_Controller.rt -o src/main/resources/TableAM_04_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableAM_04_consistency.py
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableController_v1.rt -o src/main/resources/TableController_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/TableController_v1_consistency.py
 sleep 2
 
 # Remove python files
