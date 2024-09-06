@@ -26,3 +26,4 @@ Requirements2Z3/src/main/resources/*.py
 .venv
 .vsWorkspace/
 Workspace/*
+.project
