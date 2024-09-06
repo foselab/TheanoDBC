@@ -5,8 +5,6 @@ import java.io.Writer;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-
 import generated.matlabLexer;
 import generated.matlabParser;
 import requirements2Z3.consistency.Functionality;
@@ -43,8 +41,8 @@ public class Translator<T extends Table2Z3Visitor> {
 		matlabParser parser = new matlabParser(tokens);
 		parser.setBuildParseTree(true);
 
-		RQTable tree=parser.primaryExpression().rqt;
-		
+		RQTable tree=parser.g().rqt;
+				
 		// creates the Z3 solver
 		wt.write("from z3 import *;\n");
 

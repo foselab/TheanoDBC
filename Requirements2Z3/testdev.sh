@@ -20,6 +20,16 @@ MAIN_CLASS="requirements2Z3.Main"
 # Remove python files
 rm -f src/main/resources/*.py
 
+echo -e "\nRequirements ComposedTable_v1"
+
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/ComposedTable_v1.rt -o src/main/resources/ComposedTable_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/ComposedTable_v1_completeness.py
+sleep 2
+
+java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/ComposedTable_v1.rt -o src/main/resources/ComposedTable_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+timeout 10 python src/main/resources/ComposedTable_v1_consistency.py
+sleep 2
+
 echo -e "\nRequirements TableCar_v1"
 
 java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v1.rt -o src/main/resources/TableCar_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1

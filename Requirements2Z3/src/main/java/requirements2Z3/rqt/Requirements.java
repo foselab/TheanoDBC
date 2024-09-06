@@ -21,6 +21,10 @@ public class Requirements {
 		return this.requirements;
 	}
 	
+	public Requirement getRequirement(int index) {
+		return (Requirement) this.requirements.toArray()[index];
+	}
+	
 	public <T> T accept(RQTableVisitor<T> visitor) {
 		return visitor.visit(this);
 	}

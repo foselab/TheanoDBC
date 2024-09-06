@@ -21,7 +21,6 @@ import requirements2Z3.consistency.Functionality;
 import requirements2Z3.consistency.UnboundedCompletenessTranslator;
 import requirements2Z3.consistency.UnboundedConsistencyTranslator;
 import requirements2Z3.rqt.RQTable;
-import requirements2Z3.visitors.RQTableToStringVisitor;
 import requirements2Z3.visitors.translators.Table2Z3Visitor;
 
 public class Main {
@@ -84,7 +83,7 @@ public class Main {
 		rqParser.setBuildParseTree(true);
 
 
-		RQTable rqTable = rqParser.primaryExpression().rqt;
+		RQTable rqTable = rqParser.g().rqt;
 		
 		
 		double ts=(rqTable.getTd()!=null) ? rqTable.getTd().getConstant() :-1;

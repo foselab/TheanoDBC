@@ -18,10 +18,14 @@ public class Variables {
 		this.vars.add(v);	
 	}
 	
+	public void addAll(Variables vars) {
+		this.vars.addAll(vars.getVariables());
+	}
+		
 	public Set<Variable> getVariables(){
 		return this.vars;
 	}
-	
+		
 	public <T> T accept(RQTableVisitor<T> visitor) {
 		return visitor.visit(this);
 	}

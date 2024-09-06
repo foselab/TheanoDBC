@@ -7,6 +7,18 @@ import requirements2Z3.rqt.*;
 
 }
 
+g returns [RQTable rqt]
+:
+	composedExpression {$rqt = $composedExpression.rqt;} |
+	primaryExpression {$rqt = $primaryExpression.rqt;}
+;
+
+composedExpression returns [ComposedRQTable rqt]
+:
+	'table' CR fst=primaryExpression CR 'endtable' CR 'table' CR snd=primaryExpression CR 'endtable'
+	{$rqt=new ComposedRQTable($fst.rqt, $snd.rqt);}
+;
+
 primaryExpression returns [RQTable rqt]
 :
 	ts=timestampdefinition vsdefs=variablesdefinitions rqdefs=requirementsdefinitions

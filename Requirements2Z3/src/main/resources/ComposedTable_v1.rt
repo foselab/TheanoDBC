@@ -1,0 +1,22 @@
+table
+vardef
+  th,Real,input;
+  sp,Real,output;
+endvardef
+reqdef
+  th>0,sp>=prev(sp);
+  th<=0,sp<=prev(sp);
+endreqdef
+endtable
+table
+vardef
+  sp,Real,input;
+  st,Real,input;
+  br,Real,input;
+  th,Real,output;
+endvardef
+reqdef
+  (br<=0)&(sp<st),th>0;
+  (br>0)|(sp>=st),th==0;
+endreqdef
+endtable
