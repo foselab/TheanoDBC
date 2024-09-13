@@ -49,6 +49,10 @@ public class Main {
 		encoding.setRequired(true);
 		options.addOption(encoding);
 
+		Option refinement = new Option("r", "refinement", false, "refinement checking");
+		refinement.setRequired(false);
+		options.addOption(refinement);
+
 		CommandLineParser parser = new DefaultParser();
 		HelpFormatter formatter = new HelpFormatter();
 		CommandLine cmd = null;// not a good practice, it serves it purpose
@@ -83,10 +87,17 @@ public class Main {
 		rqParser.setBuildParseTree(true);
 
 
+		// get requirement table
 		RQTable rqTable = rqParser.g().rqt;
 		
 		
 		double ts=(rqTable.getTd()!=null) ? rqTable.getTd().getConstant() :-1;
+		
+		// TODO it works, but it is not the best way to do it
+		if (cmd.hasOption("r")) {
+			refinement(inputFilePath, outputFilePath, selectedEncoding, 2, new UnboundedConsistencyTranslator(), ts);
+			return;
+		}
 		
 		//System.out.println(rqTable.accept(new RQTableToStringVisitor()));
 		switch (typeInput) {
@@ -123,5 +134,12 @@ public class Main {
 			String selectedEncoding, int bound, Functionality<T> functionality, double ts) throws Exception {
 		
 		Encodings.translate(inputFilePath, outputFilePath, selectedEncoding, bound, functionality,ts).translate();
+	}
+	
+	private static <T extends Table2Z3Visitor> void refinement(String inputFilePath, String outputFilePath,
+			String selectedEncoding, int bound, Functionality<T> functionality, double ts) throws Exception {
+
+		System.out.println("Refinement check");
+		Encodings.translate(inputFilePath, outputFilePath, selectedEncoding, bound, functionality,ts).refinementCheck();
 	}
 }

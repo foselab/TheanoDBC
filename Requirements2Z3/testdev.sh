@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Set the classpath (replace backslashes with forward slashes)
 CLASSPATH="target/classes:\
 $HOME/.m2/repository/org/antlr/antlr4/4.5/antlr4-4.5.jar:\
@@ -17,57 +19,80 @@ JVM_OPTS="-Dfile.encoding=UTF-8 \
 # Set the main class
 MAIN_CLASS="requirements2Z3.Main"
 
-# Remove python files
-rm -f src/main/resources/*.py
+# Set the resources path (adjust the path to the correct location)
+RESOURCES_PATH="src/main/resources"
 
-echo -e "\nRequirements ComposedTable_v1"
+# Tables to be checked
+TABLES=("ComposedTable_v1" "TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1")
+REFINEMENT_TABLES=("RefinedTable_v1" "RefinedTable_v2")
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/ComposedTable_v1.rt -o src/main/resources/ComposedTable_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/ComposedTable_v1_completeness.py
-sleep 2
+# Initialize flags for completeness, consistency, and refinement
+run_completeness=false
+run_consistency=false
+run_refinement=false
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/ComposedTable_v1.rt -o src/main/resources/ComposedTable_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/ComposedTable_v1_consistency.py
-sleep 2
+# Manual argument parsing for long options
+for arg in "$@"; do
+  case $arg in
+    -refinement)
+        run_refinement=true
+        shift
+        ;;
+    -completeness)
+      run_completeness=true
+      shift
+      ;;
+    -consistency)
+      run_consistency=true
+      shift
+      ;;
+    *)
+      echo "Invalid option: $arg"
+      ;;
+  esac
+done
 
-echo -e "\nRequirements TableCar_v1"
+# If no options are provided, display a message and enter an infinite loop
+if [ "$run_completeness" = false ] && [ "$run_consistency" = false ] && [ "$run_refinement" = false ]; then
+    echo -e "Please run the script with one of the following options:\n \t[-refinement]\n \t[-completeness]\n \t[-consistency]\n"
+    echo "Press [Ctrl+C] to exit."
+    while true; do
+        sleep 1
+    done
+fi
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v1.rt -o src/main/resources/TableCar_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v1_completeness.py
-sleep 2
+# Check refinement for each table
+if [ "$run_refinement" = true ]; then
+    for table in "${REFINEMENT_TABLES[@]}"; do
+        echo -e "\n$table"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v1.rt -o src/main/resources/TableCar_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v1_consistency.py
-sleep 2
+        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeArFs -t completeness -b 6 -r > /dev/null 2>&1
+        timeout 10 python $RESOURCES_PATH/${table}_refinement.py
+        sleep 2
+    done
+fi
 
-echo -e "\nRequirements TableCar_v2"
+# Check completeness and consistency for each table
+if [[ "$run_completeness" = true || "$run_consistency" = true ]]; then
+    for table in "${TABLES[@]}"; do
+        echo -e "\n$table"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v2.rt -o src/main/resources/TableCar_v2_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v2_completeness.py
-sleep 2
+        if [ "$run_completeness" = true ]; then
+            java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+            timeout 10 python $RESOURCES_PATH/${table}_completeness.py
+            sleep 2
+        fi
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v2.rt -o src/main/resources/TableCar_v2_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v2_consistency.py
+        if [ "$run_consistency" = true ]; then
+            java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+            timeout 10 python $RESOURCES_PATH/${table}_consistency.py
+            sleep 2
+        fi
+    done
+fi
 
-echo -e "\nRequirements TableCar_v3"
 
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v3.rt -o src/main/resources/TableCar_v3_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v3_completeness.py
-sleep 2
-
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableCar_v3.rt -o src/main/resources/TableCar_v3_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableCar_v3_consistency.py
-sleep 2
-
-echo -e "\nRequirements TableController_v1"
-
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableController_v1.rt -o src/main/resources/TableController_v1_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableController_v1_completeness.py
-sleep 2
-
-java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i src/main/resources/TableController_v1.rt -o src/main/resources/TableController_v1_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
-timeout 10 python src/main/resources/TableController_v1_consistency.py
-sleep 2
-
-# Remove python files
-rm -f src/main/resources/*.py
+# Remove python files if any checks were run
+if [ "$run_completeness" = true ] || [ "$run_consistency" = true ] || [ "$run_refinement" = true ]; then
+    rm -f $RESOURCES_PATH/*.py
+fi
