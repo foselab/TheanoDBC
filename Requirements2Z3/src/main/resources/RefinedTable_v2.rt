@@ -1,0 +1,18 @@
+table
+vardef
+  th,Real,input;
+  sp,Real,output;
+endvardef
+reqdef
+  (th>3)&(th<5),sp>=prev(sp);
+endreqdef
+endtable
+table
+vardef
+  th,Real,input;
+  sp,Real,output;
+endvardef
+reqdef
+  (th>0)&(th<4),sp>=prev(sp);
+endreqdef
+endtable
