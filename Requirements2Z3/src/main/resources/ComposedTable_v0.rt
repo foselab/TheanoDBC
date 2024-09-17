@@ -1,0 +1,18 @@
+table
+vardef
+  sp,Real,input;
+  ci,Real,output;
+endvardef
+reqdef
+  sp<80,ci>0;
+endreqdef
+endtable
+table
+vardef
+  ci,Real,input;
+  sp,Real,output;
+endvardef
+reqdef
+  ci>0,sp>0;
+endreqdef
+endtable

@@ -1,0 +1,24 @@
+table
+vardef
+  sp,Real,input;
+  br,Real,input;
+  ssa,Real,input;
+  ssb,Real,input;
+  abs,Real,output;
+endvardef
+reqdef
+  ((sp>15)&(br>8))&((ssa==1)&(ssb==1)),abs==1;
+endreqdef
+endtable
+table
+vardef
+  sp,Real,input;
+  br,Real,input;
+  ssa,Real,input;
+  ssb,Real,input;
+  abs,Real,output;
+endvardef
+reqdef
+  ((ssa==1)|(ssb==1))&((sp>10)&(br>8)),abs==1;
+endreqdef
+endtable

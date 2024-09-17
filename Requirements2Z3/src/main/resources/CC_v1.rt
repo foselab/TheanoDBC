@@ -1,0 +1,20 @@
+table
+vardef
+  cc,Real,input;
+  st,Real,output;
+  sp,Real,output;
+endvardef
+reqdef
+  dur(cc==1)>10,(sp>st-3)&(sp<st+3);
+endreqdef
+endtable
+table
+vardef
+  cc,Real,input;
+  st,Real,output;
+  sp,Real,output;
+endvardef
+reqdef
+  dur(cc==1)>10,(sp>st-2)&(sp<st+2);
+endreqdef
+endtable
