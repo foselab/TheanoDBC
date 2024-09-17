@@ -23,8 +23,8 @@ MAIN_CLASS="requirements2Z3.Main"
 RESOURCES_PATH="src/main/resources"
 
 # Tables to be checked
-TABLES=("ComposedTable_v1" "TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1")
-REFINEMENT_TABLES=("RefinedTable_v1" "RefinedTable_v2")
+TABLES=("ComposedTable_v0" "ComposedTable_v1" "TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1")
+REFINEMENT_TABLES=("ABS_v1" "ABS_v2" "ABS_v3" "ABS_v4" "ABS_v5" "CC_v1" "CC_v2" "RefinedTable_v1" "RefinedTable_v2")
 
 # Initialize flags for completeness, consistency, and refinement
 run_completeness=false
@@ -66,7 +66,7 @@ if [ "$run_refinement" = true ]; then
     for table in "${REFINEMENT_TABLES[@]}"; do
         echo -e "\n$table"
 
-        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeArFs -t completeness -b 6 -r > /dev/null 2>&1
+        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeUfFs -t completeness -b 6 -r > /dev/null 2>&1
         timeout 10 python $RESOURCES_PATH/${table}_refinement.py
         sleep 2
     done

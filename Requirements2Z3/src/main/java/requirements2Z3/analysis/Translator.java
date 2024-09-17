@@ -119,6 +119,25 @@ public class Translator<T extends Table2Z3Visitor> {
 		// to be used in the encoding
 		wt.write("# Signal variables definition\n");
 		wt.write(new DefineVariablesVisitor().visit(rt) + "\n");
+		
+		if (rt.getTd()!=null) {
+			 wt.write(rt.getTd().accept(z3visitor).toString());
+		}
+
+		// defines the quantification variables
+		wt.write("# Quantification variables\n");
+
+		wt.write("j = Int('j')\n");
+		wt.write("i = Int('i')\n");
+		wt.write("k = Int('k')\n\n");
+		
+		// define the timestamp array
+		wt.write("# Timestamp structure\n");
+		wt.write(this.encoder.defineTraceVariable() + "\n");
+
+		// add the monotonicity constraint to the timestamp structure
+		wt.write("# Timestamp structure monotonicity\n");
+		wt.write("s.add(" + this.encoder.getMonotonicityConstraint() + ")\n\n");
 				
 		// add the encoding of the requirements table
 		wt.write("# Requirements Table\n");
