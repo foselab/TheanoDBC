@@ -7,7 +7,7 @@ vardef
   abs,Real,output;
 endvardef
 reqdef
-  (sp>15) & (br>8) & (ssa==1) & (ssb==1),abs==1;
+  ((sp>15)&(br>8))&((ssa==1)&(ssb==1)),abs==1;
 endreqdef
 endtable
 table
