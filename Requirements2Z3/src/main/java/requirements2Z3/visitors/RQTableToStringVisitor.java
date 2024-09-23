@@ -74,12 +74,12 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(RelationalExpression relationalExpression) {
-		return relationalExpression.getExp1().accept(this)+relationalExpression.getOp().toString()+relationalExpression.getExp2().accept(this);
+		return "("+relationalExpression.getExp1().accept(this)+relationalExpression.getOp().toString()+relationalExpression.getExp2().accept(this)+")";
 	}
 
 	@Override
 	public String visit(Requirement requirement) {
-		return "\t"+requirement.getPrecondition().accept(this)+","+requirement.getPostcondition().accept(this);
+		return "\t"+requirement.getPrecondition().accept(this)+","+requirement.getPostcondition().accept(this)+";";
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(Variable variable) {
-		return "\t"+variable.getName()+","+variable.getType()+","+variable.getInputOutput();
+		return "\t"+variable.getName()+","+variable.getType()+","+variable.getInputOutput()+";";
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 	@Override
 	public String visit(RQTable rqTable) {
 		StringBuilder builder=new StringBuilder();
-		builder.append(rqTable.getTd().accept(this));
+		if (rqTable.getTd()!=null) builder.append(rqTable.getTd().accept(this));
 		builder.append("vardef\n"+rqTable.getVariables().accept(this)+"endvardef\n");
 		builder.append("reqdef\n"+rqTable.getRequirements().accept(this)+"endreqdef\n");
 		
