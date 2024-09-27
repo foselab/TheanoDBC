@@ -1,4 +1,4 @@
-table
+table A
 vardef
   th,Real,input;
   sp,Real,output;
@@ -7,7 +7,7 @@ reqdef
   (th>3)&(th<5),sp>=prev(sp);
 endreqdef
 endtable
-table
+table A_prime
 vardef
   th,Real,input;
   sp,Real,output;

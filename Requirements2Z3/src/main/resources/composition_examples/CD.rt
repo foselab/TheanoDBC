@@ -1,4 +1,4 @@
-table
+table C
 vardef
   th,Real,input;
   sp,Real,output;
@@ -8,7 +8,7 @@ reqdef
   th<=0,sp<=prev(sp);
 endreqdef
 endtable
-table
+table D
 vardef
   sp,Real,input;
   st,Real,input;

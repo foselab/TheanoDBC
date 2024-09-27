@@ -1,4 +1,4 @@
-table
+table A
 vardef
   sp,Real,input;
   ci,Real,output;
@@ -7,7 +7,7 @@ reqdef
   sp<80,ci>0;
 endreqdef
 endtable
-table
+table B
 vardef
   ci,Real,input;
   sp,Real,output;

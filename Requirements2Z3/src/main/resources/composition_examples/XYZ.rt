@@ -1,0 +1,27 @@
+table X
+vardef
+  a,Real,input;
+  b,Real,output;
+endvardef
+reqdef
+  a>0,b>0;
+endreqdef
+endtable
+table Y
+vardef
+  b,Real,input;
+  c,Real,output;
+endvardef
+reqdef
+  b>0,c>0;
+endreqdef
+endtable
+table Z
+vardef
+  c,Real,input;
+  d,Real,output;
+endvardef
+reqdef
+  c>0,d>0;
+endreqdef
+endtable

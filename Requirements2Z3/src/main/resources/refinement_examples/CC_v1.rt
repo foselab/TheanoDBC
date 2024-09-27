@@ -1,4 +1,4 @@
-table
+table cc
 vardef
   cc,Real,input;
   st,Real,output;
@@ -8,7 +8,7 @@ reqdef
   dur(cc==1)>10,(sp>st-3)&(sp<st+3);
 endreqdef
 endtable
-table
+table cc_prime
 vardef
   cc,Real,input;
   st,Real,output;
