@@ -31,9 +31,11 @@ public class ComposedRQTable extends RQTable {
 	
 	public void compose(boolean all) throws Exception{
 		// Print the names of the RQTables
-        System.out.print("Available tables: ");
-        this.printContracts();
-        		
+        if (!all) {
+        	System.out.print("Available tables: ");
+        	this.printContracts();
+        }
+        
         // Selection of the contracts
         this.contractsSelection(all);
         

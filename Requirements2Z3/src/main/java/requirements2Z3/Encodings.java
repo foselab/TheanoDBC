@@ -30,7 +30,7 @@ public enum Encodings {
 	 * @param <T>
 	 * @param inputFilePath
 	 * @param outputFilePath
-	 * @param selectedEncoding
+	 * @param encoding
 	 * @param bound
 	 * @param functionality
 	 * @param ts set ts to zero if the encoding does not require a fixed timestamp.
@@ -38,14 +38,14 @@ public enum Encodings {
 	 * @throws Exception
 	 */
 	public static <T extends Table2Z3Visitor> Translator<? extends Table2Z3Visitor> translate(String inputFilePath, String outputFilePath,
-			String selectedEncoding, int bound, Functionality<T> functionality, double ts) throws Exception {
+			String encoding, int bound, Functionality<T> functionality, double ts) throws Exception {
 
 
 		
 		Translator<? extends Table2Z3Visitor> translator;
 		Table2Z3Visitor z3visitor = null;
 		
-		switch (Encodings.valueOf(selectedEncoding)) {
+		switch (Encodings.valueOf(encoding)) {
 		// unbounded
 		case UeArFs:
 			z3visitor = new UeArFsFactory(ts).getVisitor();
@@ -73,7 +73,7 @@ public enum Encodings {
 			z3visitor = new BeUfVsFactory(bound).getVisitor();
 			break;
 		default:
-			throw new IllegalArgumentException("Encoding: " + selectedEncoding + " is not supported. ");
+			throw new IllegalArgumentException("Encoding: " + encoding + " is not supported. ");
 		}
 		return new Translator(z3visitor, functionality, new FileReader(inputFilePath), new FileWriter(outputFilePath));
 	}
