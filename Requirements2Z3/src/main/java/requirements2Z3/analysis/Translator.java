@@ -9,7 +9,6 @@ import generated.matlabLexer;
 import generated.matlabParser;
 import requirements2Z3.consistency.Functionality;
 import requirements2Z3.encodings.Encoder;
-import requirements2Z3.rqt.ComposedRQTable;
 import requirements2Z3.rqt.RQTable;
 import requirements2Z3.visitors.DefineVariablesVisitor;
 import requirements2Z3.visitors.translators.Table2Z3Visitor;
@@ -42,7 +41,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		matlabParser parser = new matlabParser(tokens);
 		parser.setBuildParseTree(true);
 
-		RQTable tree=parser.g().rqt;
+		RQTable tree=parser.primaryExpression().rqt;
 				
 		// creates the Z3 solver
 		wt.write("from z3 import *;\n");
@@ -92,20 +91,21 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.close();
 	}
 	
-	public void refinementCheck() throws Exception {
+	public void refinementCheck(RQTable RQTable, RQTable NewRQTable) throws Exception {
 		matlabLexer lexer = new matlabLexer(new ANTLRInputStream(sc));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		matlabParser parser = new matlabParser(tokens);
 		parser.setBuildParseTree(true);
 
-		ComposedRQTable rt = (ComposedRQTable) parser.g().rqt;
-		// if (tree instanceof ComposedRQTable) throw new IllegalArgumentException("Refinement not supported for this table");
-		
-		RQTable rt1 = rt.getFirst();
-		RQTable rt2 = rt.getSecond();
+		String tableName = RQTable.getName();
+		String newTableName = NewRQTable.getName();
 		
 		// creates the Z3 solver
 		wt.write("from z3 import *;\n\n");
+		
+		wt.write("# Tables names\n");
+		wt.write("RQTableName=\""+tableName+"\"\n");
+		wt.write("NewRQTableName=\""+newTableName+"\"\n\n");
 
 		wt.write("# Defines the Z3 solver\n");
 		wt.write("s = Solver()\n\n");
@@ -118,10 +118,15 @@ public class Translator<T extends Table2Z3Visitor> {
 		// visits the requirements table and creates a String that defines the variables
 		// to be used in the encoding
 		wt.write("# Signal variables definition\n");
-		wt.write(new DefineVariablesVisitor().visit(rt) + "\n");
+		wt.write(new DefineVariablesVisitor().visit(RQTable) + "\n");
+		wt.write(new DefineVariablesVisitor().visit(NewRQTable) + "\n");
 		
-		if (rt.getTd()!=null) {
-			 wt.write(rt.getTd().accept(z3visitor).toString());
+		if (RQTable.getTd()!=null) {
+			 wt.write(RQTable.getTd().accept(z3visitor).toString());
+		}
+
+		if (NewRQTable.getTd()!=null) {
+			 wt.write(NewRQTable.getTd().accept(z3visitor).toString());
 		}
 
 		// defines the quantification variables
@@ -143,19 +148,19 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("# Requirements Table\n");
 				
 		// convert requirements to z3formula
-		Z3Formula A1 = rt1.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
-		Z3Formula G1 = rt1.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
-		Z3Formula A2 = rt2.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
-		Z3Formula G2 = rt2.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
+		Z3Formula A1 = RQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
+		Z3Formula G1 = RQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
+		Z3Formula A2 = NewRQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
+		Z3Formula G2 = NewRQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
 		
 		String A1inA2 = Z3Formula.getImplies(A1, A2).toString();
 		String G2inG1 = Z3Formula.getImplies(G2, G1).toString();
 		
 		wt.write("s.add(Not(And("+A1inA2+","+G2inG1+")))\n");
 		wt.write("if s.check() == unsat:\n");
-		wt.write("\tprint(\"Refinement OK -> Update allowed \")\n");
+		wt.write("\tprint(\""+ newTableName +" refines "+ tableName +" (compatible update) \")\n");
 		wt.write("else:\n");
-		wt.write("\tprint(\"Refinement FAIL -> Update NOT allowed\")\n");
+		wt.write("\tprint(\""+ newTableName +" does NOT refine "+ tableName + " (update NOT recommended)\")\n");
 		
 		sc.close();
 		wt.close();

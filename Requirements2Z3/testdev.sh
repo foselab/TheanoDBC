@@ -23,27 +23,42 @@ MAIN_CLASS="requirements2Z3.Main"
 RESOURCES_PATH="src/main/resources"
 
 # Tables to be checked
-TABLES=("ComposedTable_v0" "ComposedTable_v1" "TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1")
-REFINEMENT_TABLES=("ABS_v1" "ABS_v2" "ABS_v3" "ABS_v4" "ABS_v5" "CC_v1" "CC_v2" "RefinedTable_v1" "RefinedTable_v2")
+TABLES=()
+# TABLES=("Table1_5" "Table2_5" "Table3_5" "Table4_5") # previous examples
+PAPER_TABLES=("TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1") # paper examples, check completeness and consistency
+COMPOSITION_TABLES=("XYZ" "AB" "CD")
+REFINEMENT_TABLES=("RefinedTable_v1" "RefinedTable_v2" "ABS_v1" "ABS_v2" "ABS_v3" "ABS_v4" "ABS_v5" "CC_v1" "CC_v2") # refinement examples
 
 # Initialize flags for completeness, consistency, and refinement
 run_completeness=false
 run_consistency=false
 run_refinement=false
+run_composition=false
+
+show_java_output=false
+redirect_output=""
+
+if [ "$show_java_output" = false ]; then
+    redirect_output="> /dev/null 2>&1"
+fi
 
 # Manual argument parsing for long options
 for arg in "$@"; do
   case $arg in
     -refinement)
-        run_refinement=true
-        shift
-        ;;
+      run_refinement=true
+      shift
+      ;;
     -completeness)
       run_completeness=true
       shift
       ;;
     -consistency)
       run_consistency=true
+      shift
+      ;;
+    -composition)
+      run_composition=true
       shift
       ;;
     *)
@@ -53,8 +68,8 @@ for arg in "$@"; do
 done
 
 # If no options are provided, display a message and enter an infinite loop
-if [ "$run_completeness" = false ] && [ "$run_consistency" = false ] && [ "$run_refinement" = false ]; then
-    echo -e "Please run the script with one of the following options:\n \t[-refinement]\n \t[-completeness]\n \t[-consistency]\n"
+if [ "$run_completeness" = false ] && [ "$run_consistency" = false ] && [ "$run_refinement" = false ] && [ "$run_composition" = false ]; then
+    echo -e "Please run the script with one of the following options:\n \t[-refinement]\n \t[-completeness]\n \t[-consistency]\n \t[-composition]\n"
     echo "Press [Ctrl+C] to exit."
     while true; do
         sleep 1
@@ -62,11 +77,29 @@ if [ "$run_completeness" = false ] && [ "$run_consistency" = false ] && [ "$run_
 fi
 
 # Check refinement for each table
-if [ "$run_refinement" = true ]; then
-    for table in "${REFINEMENT_TABLES[@]}"; do
+if [ "$run_composition" = true ]; then
+    echo "COMPOSITION"
+    RESOURCES_PATH="src/main/resources/composition_examples"
+    TABLES=("${COMPOSITION_TABLES[@]}")
+
+    for table in "${TABLES[@]}"; do
         echo -e "\n$table"
 
-        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeUfFs -t completeness -b 6 -r > /dev/null 2>&1
+        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}-composed.rt -e BeUfFs -t composition -b 6 -a
+        sleep 2
+    done
+fi
+
+# Check refinement for each table
+if [ "$run_refinement" = true ]; then
+    echo -e "\nREFINEMENT"
+    RESOURCES_PATH="src/main/resources/refinement_examples"
+    TABLES=("${REFINEMENT_TABLES[@]}")
+    
+    for table in "${TABLES[@]}"; do
+        echo -e "\n$table"
+
+        eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeUfFs -t refinement -b 6 $redirect_output
         timeout 10 python $RESOURCES_PATH/${table}_refinement.py
         sleep 2
     done
@@ -74,25 +107,28 @@ fi
 
 # Check completeness and consistency for each table
 if [[ "$run_completeness" = true || "$run_consistency" = true ]]; then
+    echo -e "\nCOMPLETENESS/CONSISTENCY"
+    RESOURCES_PATH="src/main/resources/paper_examples"
+    TABLES=("${PAPER_TABLES[@]}")
+    
     for table in "${TABLES[@]}"; do
         echo -e "\n$table"
 
         if [ "$run_completeness" = true ]; then
-            java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_completeness.py -e BeUfFs -t completeness -b 6 > /dev/null 2>&1
+            eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_completeness.py -e BeUfFs -t completeness -b 6 $redirect_output
             timeout 10 python $RESOURCES_PATH/${table}_completeness.py
             sleep 2
         fi
 
         if [ "$run_consistency" = true ]; then
-            java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_consistency.py -e BeUfFs -t consistency -b 6 > /dev/null 2>&1
+            eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_consistency.py -e BeUfFs -t consistency -b 6 $redirect_output
             timeout 10 python $RESOURCES_PATH/${table}_consistency.py
             sleep 2
         fi
     done
 fi
 
-
 # Remove python files if any checks were run
 if [ "$run_completeness" = true ] || [ "$run_consistency" = true ] || [ "$run_refinement" = true ]; then
-    rm -f $RESOURCES_PATH/*.py
+    find "$RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} +
 fi

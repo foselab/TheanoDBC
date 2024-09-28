@@ -23,6 +23,7 @@ Theano.jar
 SimulinkExamples/slprj/*
 Table1.rt
 Requirements2Z3/src/main/resources/**/*.py
+Requirements2Z3/src/main/resources/**/*-composed.rt
 .venv
 .vsWorkspace/
 Workspace/*

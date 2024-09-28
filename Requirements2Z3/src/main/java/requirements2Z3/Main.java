@@ -20,23 +20,27 @@ import requirements2Z3.consistency.BoundedConsistencyTranslator;
 import requirements2Z3.consistency.Functionality;
 import requirements2Z3.consistency.UnboundedCompletenessTranslator;
 import requirements2Z3.consistency.UnboundedConsistencyTranslator;
+import requirements2Z3.rqt.ComposedRQTable;
 import requirements2Z3.rqt.RQTable;
 import requirements2Z3.visitors.translators.Table2Z3Visitor;
 
 public class Main {
 
 	public static void main(String[] args) throws Exception {
+		// available terminal options
 		Options options = new Options();
 
+		// input file is always a .rt file
 		Option input = new Option("i", "inputFile", true, "input file path");
 		input.setRequired(true);
 		options.addOption(input);
 
-		Option output = new Option("o", "inputFile", true, "output file path");
+		// output file can be a .rt file (composition) or python file
+		Option output = new Option("o", "outputFile", true, "output file path");
 		output.setRequired(true);
 		options.addOption(output);
 
-		Option type = new Option("t", "type", true, "consistency | completeness");
+		Option type = new Option("t", "type", true, "consistency | completeness | composition | refinement");
 		type.setRequired(true);
 		options.addOption(type);
 
@@ -46,12 +50,13 @@ public class Main {
 
 		Option encoding = new Option("e", "encoding", true,
 				"encoding one among BeArFs | BeArVs | BeUfFs | BeUfVs | UeArFs | UeArVs | UeUfFs | UeUfVs");
-		encoding.setRequired(true);
+		encoding.setRequired(false);
 		options.addOption(encoding);
-
-		Option refinement = new Option("r", "refinement", false, "refinement checking");
-		refinement.setRequired(false);
-		options.addOption(refinement);
+		
+		// compose every tables in the file if this option is true
+		Option all = new Option("a", "all", false, "all tables");
+		all.setRequired(false);
+		options.addOption(all);
 
 		CommandLineParser parser = new DefaultParser();
 		HelpFormatter formatter = new HelpFormatter();
@@ -76,7 +81,6 @@ public class Main {
 
 		int boundparam = boundVal != null ? Integer.parseInt(boundVal)+2 : -1;
 
-		// System.out.println("Processing the file: "+inputFilePath);
 		String typeInput = cmd.getOptionValue("t") != null ? cmd.getOptionValue("t") : cmd.getOptionValue("type");
 
 		
@@ -86,20 +90,46 @@ public class Main {
 		matlabParser rqParser = new matlabParser(tokens);
 		rqParser.setBuildParseTree(true);
 
+		// parse .rt file
+		// it can be a single table or a list
+		RQTable RQTable = rqParser.g().rqt;
+		
+		// only composition or refinement can be used with more than one table
+		if (RQTable instanceof ComposedRQTable) {
+		    ComposedRQTable composedTable = (ComposedRQTable) RQTable;
+		    
+			if (composedTable.getContracts().stream().anyMatch(table -> table.getName() == null || table.getName().isEmpty()))
+			    throw new Exception("Every RQTable must have a name");
+			
+			switch (typeInput) {
+				case "composition":
+					if(inputFilePath.compareTo(outputFilePath)==0)
+						throw new Exception("Composition requires different input and output files");
 
-		// get requirement table
-		RQTable rqTable = rqParser.g().rqt;
-		
-		
-		double ts=(rqTable.getTd()!=null) ? rqTable.getTd().getConstant() :-1;
-		
-		// TODO it works, but it is not the best way to do it
-		if (cmd.hasOption("r")) {
-			refinement(inputFilePath, outputFilePath, selectedEncoding, 2, new UnboundedConsistencyTranslator(), ts);
+					composedTable.compose(cmd.hasOption("a"));
+					composedTable.writeToFile(outputFilePath);
+					break;
+					
+				case "refinement":
+					if (composedTable.getContracts().size()!=2)
+						throw new Exception(typeInput + " command must be used on two tables");
+					
+					Encodings.translate(inputFilePath, outputFilePath, selectedEncoding, 2, new UnboundedConsistencyTranslator(),-1.0).refinementCheck(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
+					break;
+					
+				default:
+					throw new IllegalArgumentException("Type: " + typeInput + " is not supported for this file. ");
+			}
+			
+			System.out.println("File: " + outputFilePath + " correctly generated");
+			if(typeInput.equals("refinement"))
+				System.out.println("Run \"python3 " + outputFilePath + "\" to check for " + typeInput);
+
 			return;
 		}
+				
+		double ts=(RQTable.getTd()!=null) ? RQTable.getTd().getConstant() :-1;
 		
-		//System.out.println(rqTable.accept(new RQTableToStringVisitor()));
 		switch (typeInput) {
 		case "consistency":
 			if (cmd.getOptionValue("b") != null) {
@@ -134,12 +164,5 @@ public class Main {
 			String selectedEncoding, int bound, Functionality<T> functionality, double ts) throws Exception {
 		
 		Encodings.translate(inputFilePath, outputFilePath, selectedEncoding, bound, functionality,ts).translate();
-	}
-	
-	private static <T extends Table2Z3Visitor> void refinement(String inputFilePath, String outputFilePath,
-			String selectedEncoding, int bound, Functionality<T> functionality, double ts) throws Exception {
-
-		System.out.println("Refinement check");
-		Encodings.translate(inputFilePath, outputFilePath, selectedEncoding, bound, functionality,ts).refinementCheck();
 	}
 }

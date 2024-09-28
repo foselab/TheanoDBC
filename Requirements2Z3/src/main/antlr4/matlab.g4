@@ -15,8 +15,18 @@ g returns [RQTable rqt]
 
 composedExpression returns [ComposedRQTable rqt]
 :
-	'table' CR fst=primaryExpression CR 'endtable' CR 'table' CR snd=primaryExpression CR 'endtable'
-	{$rqt=new ComposedRQTable($fst.rqt, $snd.rqt);}
+	'table' fstName=IDENTIFIER CR fst=primaryExpression CR 'endtable' CR
+	'table' sndName=IDENTIFIER CR snd=primaryExpression CR 'endtable' (CR)*
+	{
+		$rqt=new ComposedRQTable();
+		$fst.rqt.setName($fstName.text); $snd.rqt.setName($sndName.text);
+		$rqt.add($fst.rqt); $rqt.add($snd.rqt);
+	}
+	(CR 'table' name=IDENTIFIER CR primaryExpr=primaryExpression CR 'endtable' (CR|WS)*
+	{
+		$primaryExpr.rqt.setName($name.text);
+		$rqt.add($primaryExpr.rqt);
+	})*
 ;
 
 primaryExpression returns [RQTable rqt]
