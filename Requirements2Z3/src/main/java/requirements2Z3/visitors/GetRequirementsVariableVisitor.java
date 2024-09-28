@@ -5,12 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-import generated.matlabBaseVisitor;
-import generated.matlabParser.RequirementContext;
-import generated.matlabParser.RequirementsdefinitionsContext;
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;

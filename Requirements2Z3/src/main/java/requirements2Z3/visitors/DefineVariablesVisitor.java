@@ -1,7 +1,5 @@
 package requirements2Z3.visitors;
 
-import java.util.Set;
-
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;

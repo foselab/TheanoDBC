@@ -1,7 +1,5 @@
 package requirements2Z3.encodings.step;
 
-import org.apache.commons.lang3.StringUtils;
-
 import requirements2Z3.encodings.trace.TraceEncoder;
 import requirements2Z3.z3formulae.Z3Formula;
 

@@ -2,9 +2,6 @@ package requirements2Z3.consistency;
 
 import java.util.Set;
 
-import org.antlr.v4.runtime.tree.ParseTree;
-
-import generated.matlabParser.RequirementContext;
 import requirements2Z3.rqt.RQTable;
 import requirements2Z3.rqt.Requirement;
 import requirements2Z3.rqt.Variable;

@@ -12,7 +12,6 @@ import requirements2Z3.rqt.IsNotStartup;
 import requirements2Z3.rqt.IsStartup;
 import requirements2Z3.rqt.NegationFormula;
 import requirements2Z3.rqt.OrFormula;
-import requirements2Z3.rqt.PFormula;
 import requirements2Z3.rqt.PrevExpression;
 import requirements2Z3.rqt.RQTable;
 import requirements2Z3.rqt.RelationalExpression;
