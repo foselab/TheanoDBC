@@ -10,6 +10,7 @@ import generated.matlabParser;
 import requirements2Z3.consistency.Functionality;
 import requirements2Z3.encodings.Encoder;
 import requirements2Z3.rqt.RQTable;
+import requirements2Z3.rqt.Variables;
 import requirements2Z3.visitors.DefineVariablesVisitor;
 import requirements2Z3.visitors.translators.Table2Z3Visitor;
 import requirements2Z3.z3formulae.Z3Formula;
@@ -100,6 +101,9 @@ public class Translator<T extends Table2Z3Visitor> {
 		String tableName = RQTable.getName();
 		String newTableName = NewRQTable.getName();
 		
+		Variables variables = RQTable.getVariables();
+		variables.addAll(NewRQTable.getVariables());
+		
 		// creates the Z3 solver
 		wt.write("from z3 import *;\n\n");
 		
@@ -118,8 +122,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		// visits the requirements table and creates a String that defines the variables
 		// to be used in the encoding
 		wt.write("# Signal variables definition\n");
-		wt.write(new DefineVariablesVisitor().visit(RQTable) + "\n");
-		wt.write(new DefineVariablesVisitor().visit(NewRQTable) + "\n");
+		wt.write(new DefineVariablesVisitor().visit(variables) + "\n");
 		
 		if (RQTable.getTd()!=null) {
 			 wt.write(RQTable.getTd().accept(z3visitor).toString());
