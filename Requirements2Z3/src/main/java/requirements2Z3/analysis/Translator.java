@@ -143,24 +143,25 @@ public class Translator<T extends Table2Z3Visitor> {
 		// add the monotonicity constraint to the timestamp structure
 		wt.write("# Timestamp structure monotonicity\n");
 		wt.write("s.add(" + this.encoder.getMonotonicityConstraint() + ")\n\n");
-				
-		// add the encoding of the requirements table
-		wt.write("# Requirements Table\n");
-				
+							
 		// convert requirements to z3formula
 		Z3Formula A1 = RQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
 		Z3Formula G1 = RQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
 		Z3Formula A2 = NewRQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
 		Z3Formula G2 = NewRQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
 		
-		String A1inA2 = Z3Formula.getImplies(A1, A2).toString();
-		String G2inG1 = Z3Formula.getImplies(G2, G1).toString();
+		String A1inA2 = Z3Formula.getImplies(A1, A2).toString(); // A1 ⇒ A2
+		String G2inG1 = Z3Formula.getImplies(G2, G1).toString(); // G2 ⇒ G1
 		
-		wt.write("s.add(Not(And("+A1inA2+","+G2inG1+")))\n");
+		wt.write("# Refinement condition \n");
+		wt.write("refinement_condition=And("+A1inA2+","+G2inG1+")\n");
+		wt.write("s.add(Not(refinement_condition))\n\n");
 		wt.write("if s.check() == unsat:\n");
-		wt.write("\tprint(\""+ newTableName +" refines "+ tableName +" (compatible update) \")\n");
+		wt.write("\tprint(f\"{NewRQTableName} refines {RQTableName} (compatible update) \")\n");
 		wt.write("else:\n");
-		wt.write("\tprint(\""+ newTableName +" does NOT refine "+ tableName + " (update NOT recommended)\")\n");
+		wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended)\")\n");
+		wt.write("\tprint(\"Model example:\")\n");
+		wt.write("\tprint(s.model())");
 		
 		sc.close();
 		wt.close();
