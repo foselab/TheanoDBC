@@ -1,0 +1,17 @@
+vardef
+  br,Real,input;
+  pw,Real,input;
+  th,Real,output;
+  sp,Real,output;
+  st,Real,output;
+  pw,Real,output;
+endvardef
+reqdef
+  pw==0,th==0;
+  br<=0,(pw==0)|(pw==1);
+  br>0,pw==0;
+  sp<st,th>0;
+  sp==st,th==0;
+  sp>st,th<0;
+  dur(pw==1)>10,(sp>st-3)&(sp<st+3);
+endreqdef

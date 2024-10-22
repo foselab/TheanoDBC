@@ -1,8 +1,10 @@
 vardef
-  th,Real,input;
-  sp,Real,output;
+  cs,Real,input;
+	ts,Real,input;
+	th,Real,output;
 endvardef
 reqdef
-  th>0,sp>=prev(sp);
-  th<=0,sp<=prev(sp);
+	cs<=ts,th>=prev(th);
+	cs>=ts,th<=prev(th);
+	(cs<=ts+2)&(cs>=ts-2),th==prev(th);
 endreqdef
