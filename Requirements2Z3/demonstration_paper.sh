@@ -39,6 +39,4 @@ for table in "${TABLES[@]}"; do
 done
 
 # Remove python files if any checks were run
-if [ "$run_completeness" = true ] || [ "$run_consistency" = true ] || [ "$run_refinement" = true ]; then
-    rm -f $RESOURCES_PATH/*.py
-fi
+rm -f $RESOURCES_PATH/*.py
