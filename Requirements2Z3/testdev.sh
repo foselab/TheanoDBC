@@ -1,5 +1,11 @@
 #!/bin/bash
 
+theano="Theano.jar"
+
+# true -> run from source 
+# false ->  java -jar Theano.jar
+dev=true
+
 # Set the classpath (replace backslashes with forward slashes)
 CLASSPATH="target/classes:\
 $HOME/.m2/repository/org/antlr/antlr4/4.5/antlr4-4.5.jar:\
@@ -22,12 +28,18 @@ MAIN_CLASS="requirements2Z3.Main"
 # Set the resources path (adjust the path to the correct location)
 RESOURCES_PATH="src/main/resources"
 
+# Set the command based on dev variable
+if [ "$dev" = false ]; then
+    cmd="java -jar $theano"
+else
+    cmd="java $JVM_OPTS -classpath \"$CLASSPATH\" $MAIN_CLASS"
+fi
+
 # Tables to be checked
 TABLES=()
-# TABLES=("Table1_5" "Table2_5" "Table3_5" "Table4_5") # previous examples
-PAPER_TABLES=("TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1") # paper examples, check completeness and consistency
-COMPOSITION_TABLES=("XYZ" "AB" "CD")
-REFINEMENT_TABLES=("RefinedTable_v1" "RefinedTable_v2" "ABS_v1" "ABS_v2" "ABS_v3" "ABS_v4" "ABS_v5" "CC_v1" "CC_v2") # refinement examples
+PAPER_TABLES=("TableCar_v1" "TableCar_v2" "TableCar_v3" "TableController_v1") # demonstration paper examples, check completeness and consistency
+COMPOSITION_TABLES=("System") # composition examples
+REFINEMENT_TABLES=("ABS_v1" "ABS_v2" "ABS_v3" "ABS_v4" "ABS_v5") # refinement examples
 
 # Initialize flags for completeness, consistency, and refinement
 run_completeness=false
@@ -76,38 +88,44 @@ if [ "$run_completeness" = false ] && [ "$run_consistency" = false ] && [ "$run_
     done
 fi
 
-# Check refinement for each table
+# Check composition for each table
 if [ "$run_composition" = true ]; then
-    echo "COMPOSITION"
+    echo -e "\n\n***********************************************"
+    echo -e "Composition"
+    echo -e "***********************************************"
     RESOURCES_PATH="src/main/resources/composition_examples"
     TABLES=("${COMPOSITION_TABLES[@]}")
 
     for table in "${TABLES[@]}"; do
         echo -e "\n$table"
 
-        java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}-composed.rt -e BeUfFs -t composition -b 6 -a
+        eval $cmd -i "$RESOURCES_PATH/$table.rt" -o "$RESOURCES_PATH/${table}-composed.rt" -e BeUfFs -t composition -b 6 -a
         sleep 2
     done
 fi
 
 # Check refinement for each table
 if [ "$run_refinement" = true ]; then
-    echo -e "\nREFINEMENT"
+    echo -e "\n\n***********************************************"
+    echo -e "Refinement check"
+    echo -e "***********************************************"
     RESOURCES_PATH="src/main/resources/refinement_examples"
     TABLES=("${REFINEMENT_TABLES[@]}")
     
     for table in "${TABLES[@]}"; do
         echo -e "\n$table"
 
-        eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_refinement.py -e BeUfFs -t refinement -b 6 $redirect_output
-        timeout 10 python $RESOURCES_PATH/${table}_refinement.py
+        eval $cmd -i "$RESOURCES_PATH/$table.rt" -o "$RESOURCES_PATH/${table}_refinement.py" -t refinement $redirect_output
+        timeout 10 python "$RESOURCES_PATH/${table}_refinement.py"
         sleep 2
     done
 fi
 
 # Check completeness and consistency for each table
 if [[ "$run_completeness" = true || "$run_consistency" = true ]]; then
-    echo -e "\nCOMPLETENESS/CONSISTENCY"
+    echo -e "\n\n***********************************************"
+    echo -e "Completeness/Consistency check"
+    echo -e "***********************************************"
     RESOURCES_PATH="src/main/resources/paper_examples"
     TABLES=("${PAPER_TABLES[@]}")
     
@@ -115,14 +133,14 @@ if [[ "$run_completeness" = true || "$run_consistency" = true ]]; then
         echo -e "\n$table"
 
         if [ "$run_completeness" = true ]; then
-            eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_completeness.py -e BeUfFs -t completeness -b 6 $redirect_output
-            timeout 10 python $RESOURCES_PATH/${table}_completeness.py
+            eval $cmd -i "$RESOURCES_PATH/$table.rt" -o "$RESOURCES_PATH/${table}_completeness.py" -e BeUfFs -t completeness -b 6 $redirect_output
+            timeout 10 python "$RESOURCES_PATH/${table}_completeness.py"
             sleep 2
         fi
 
         if [ "$run_consistency" = true ]; then
-            eval java $JVM_OPTS -classpath "$CLASSPATH" $MAIN_CLASS -i $RESOURCES_PATH/$table.rt -o $RESOURCES_PATH/${table}_consistency.py -e BeUfFs -t consistency -b 6 $redirect_output
-            timeout 10 python $RESOURCES_PATH/${table}_consistency.py
+            eval $cmd -i "$RESOURCES_PATH/$table.rt" -o "$RESOURCES_PATH/${table}_consistency.py" -e BeUfFs -t consistency -b 6 $redirect_output
+            timeout 10 python "$RESOURCES_PATH/${table}_consistency.py"
             sleep 2
         fi
     done
