@@ -1,0 +1,27 @@
+table WeatherController
+vardef
+  t,Real,input;
+  ac,Real,output;
+endvardef
+reqdef
+  t>-50,ac>0;
+endreqdef
+endtable
+table CruiseController
+vardef
+  sp,Real,input;
+  th,Real,output;
+endvardef
+reqdef
+  sp<80,th>0;
+endreqdef
+endtable
+table Vehicle
+vardef
+  th,Real,input;
+  sp,Real,output;
+endvardef
+reqdef
+  th>0,sp>0;
+endreqdef
+endtable
