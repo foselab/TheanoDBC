@@ -5,6 +5,7 @@ import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
+import requirements2Z3.rqt.ImpliesFormula;
 import requirements2Z3.rqt.IsNotStartup;
 import requirements2Z3.rqt.IsStartup;
 import requirements2Z3.rqt.NegationFormula;
@@ -65,6 +66,11 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 	@Override
 	public String visit(AndFormula andFormula) {
 		return andFormula.getLeft().accept(this)+"&"+andFormula.getRight().accept(this);
+	}
+	
+	@Override
+	public String visit(ImpliesFormula impliesFormula) {
+		return impliesFormula.getLeft().accept(this)+"->"+impliesFormula.getRight().accept(this);
 	}
 
 	@Override

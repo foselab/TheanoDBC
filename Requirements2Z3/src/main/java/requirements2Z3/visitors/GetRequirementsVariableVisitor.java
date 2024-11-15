@@ -10,6 +10,7 @@ import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
+import requirements2Z3.rqt.ImpliesFormula;
 import requirements2Z3.rqt.IsNotStartup;
 import requirements2Z3.rqt.IsStartup;
 import requirements2Z3.rqt.NegationFormula;
@@ -82,6 +83,11 @@ public class GetRequirementsVariableVisitor implements RQTableVisitor<List<Requi
 
 	@Override
 	public List<Requirement> visit(OrFormula orFormula) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public List<Requirement> visit(ImpliesFormula impliesFormula) {
 		throw new UnsupportedOperationException();
 	}
 

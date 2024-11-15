@@ -5,6 +5,7 @@ import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
+import requirements2Z3.rqt.ImpliesFormula;
 import requirements2Z3.rqt.IsNotStartup;
 import requirements2Z3.rqt.IsStartup;
 import requirements2Z3.rqt.NegationFormula;
@@ -39,6 +40,8 @@ public interface RQTableVisitor<T> {
 	public  T visit(NegationFormula negationFormula);
 
 	public  T visit(OrFormula orFormula);
+	
+	public T visit(ImpliesFormula impliesFormula);
 
 	public  T visit(PrevExpression prevExpression);
 

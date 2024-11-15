@@ -48,13 +48,11 @@ variablesdefinitions returns [Variables vs]
 	'vardef' CR (variabledefinition {$vs.add($variabledefinition.v);})* 'endvardef' CR
 ;
 
-
 variabledefinition returns [Variable v]
 :
 	i=IDENTIFIER COMMA spec=typeSpecifier COMMA type=io  SEMICOLUMN CR
 	{$v=new Variable($i.text,$spec.tipo,$type.tipo);}
 ;
-
 
 requirementsdefinitions returns [Requirements rqs]
 :
@@ -64,38 +62,17 @@ requirementsdefinitions returns [Requirements rqs]
 
 requirement returns [Requirement rq]
 :
-	pre=precondition ',' post=postcondition SEMICOLUMN CR
-	{$rq=new Requirement($pre.f,$post.f);}	
+	precondition=logical_expression ',' postcondition=logical_expression SEMICOLUMN CR
+	{$rq=new Requirement($precondition.f,$postcondition.f);}	
 ;
 
-precondition returns [PFormula f]
-:
-	or_expression {$f=$or_expression.f;}
-;
-
-postcondition returns [PFormula f]
-:
-	or_expression {$f=$or_expression.f;}
-;
-
-or_expression returns [PFormula f]
-:
-	and_expression {$f=$and_expression.f;}
-	| 	 LPAR l=or_expression RPAR '|' LPAR r=and_expression  RPAR
-		 {  $f=new OrFormula($l.f,$r.f); } 
-;
-
-and_expression returns [PFormula f]
-:
-	negation_expression {$f=$negation_expression.f;}
-	|	 LPAR l=or_expression  RPAR '&' LPAR r=and_expression RPAR 
-		 {  $f=new AndFormula($l.f,$r.f); } 
-;
-
-negation_expression returns [PFormula f]
-:
-	atomic_expression {$f=$atomic_expression.f;}
-	| NOT LPAR or_expression RPAR {$f=new NegationFormula($or_expression.f);}
+logical_expression returns [PFormula f]
+: LPAR nested=logical_expression RPAR {$f=$nested.f;}
+| atomic_expression {$f=$atomic_expression.f;}
+| NOT LPAR logical_expression RPAR {$f=new NegationFormula($logical_expression.f);}
+| l=logical_expression AND r=logical_expression {$f=new AndFormula($l.f,$r.f);}
+| l=logical_expression OR r=logical_expression {$f=new OrFormula($l.f,$r.f);}
+| l=logical_expression IMPLIES r=logical_expression {$f=new ImpliesFormula($l.f,$r.f);}
 ;
 
 atomic_expression returns [PFormula f]
@@ -109,7 +86,7 @@ atomic_expression returns [PFormula f]
 
 dur_expression returns [PFormula f]
 :
-	DUR LPAR or_exp=or_expression RPAR durop=(GE_OP | LE_OP | EQ_OP | LEQ_OP | GEQ_OP | NE_OP) c=CONSTANT
+	DUR LPAR or_exp=logical_expression RPAR durop=(GE_OP | LE_OP | EQ_OP | LEQ_OP | GEQ_OP | NE_OP) c=CONSTANT
 	{$f=new DurFormula($or_exp.f,RelationalOperator.toRelationalOperator($durop.text),Double.parseDouble($c.text));}
 ;
 
@@ -117,7 +94,7 @@ relational_expression returns [PFormula f]
 :
 	l=arithmetic_expression rop=(GE_OP | LE_OP | EQ_OP | LEQ_OP | GEQ_OP | NE_OP) r=arithmetic_expression
 	{$f=new RelationalExpression($l.exp,RelationalOperator.toRelationalOperator($rop.text),$r.exp);}
-
+	| LPAR nested=relational_expression RPAR { $f = $nested.f; }
 ;
 
 arithmetic_expression returns [Expression exp]
@@ -125,15 +102,7 @@ arithmetic_expression returns [Expression exp]
 	multiplicative_expression {$exp=$multiplicative_expression.exp;}
 	| l=arithmetic_expression aop=(PLUS | MINUS) r=multiplicative_expression
 	  {$exp=new ArithmeticExpression($l.exp,ArithmeticOperator.toArithmeticOperator($aop.text),$r.exp);}
-;
-
-
-
-primary_expression returns [Expression exp]
-:
-	i=IDENTIFIER {$exp=new Identifier($i.text);}
-	| c=CONSTANT {$exp=new Constant(Double.parseDouble($c.text));}
-	| p=prev_expression {$exp=$p.exp;}
+	| LPAR nested=arithmetic_expression RPAR { $exp = $nested.exp;}
 ;
 
 prev_expression returns [Expression exp]
@@ -141,10 +110,11 @@ prev_expression returns [Expression exp]
 	PREV LPAR i=IDENTIFIER {$exp=new PrevExpression(new Identifier($i.text));} RPAR
 ;
 
-
 postfix_expression returns [Expression exp]
 :
-	p=primary_expression {$exp=$p.exp;}
+	i=IDENTIFIER {$exp=new Identifier($i.text);}
+	| c=CONSTANT {$exp=new Constant(Double.parseDouble($c.text));}
+	| p=prev_expression {$exp=$p.exp;}
 ;
 
 unary_expression returns [Expression exp]
@@ -196,10 +166,24 @@ REAL:
  'Real'
 ;
 
-
 NOT
 :
 	'!'
+;
+
+AND
+:
+	'&'
+;
+
+OR
+:
+	'|'
+;
+
+IMPLIES
+:
+	'->'
 ;
 
 MULT
@@ -326,34 +310,19 @@ CONSTANT
 	)?
 ;
 
-fragment
-NUMBER
+fragment NUMBER
 :
-	(
-		'0' .. '9'
-	)+
-	(
-		'.'
-		(
-			'0' .. '9'
-		)+
-	)?
+	('0' .. '9')+ ('.' ( '0' .. '9')+)?
 ;
 
-fragment
-E
+fragment E
 :
-	'E'
-	| 'e'
+	'E' | 'e'
 ;
 
-fragment
-SIGN
+fragment SIGN
 :
-	(
-		'+'
-		| '-'
-	)
+	('+' | '-')
 ;
 
 

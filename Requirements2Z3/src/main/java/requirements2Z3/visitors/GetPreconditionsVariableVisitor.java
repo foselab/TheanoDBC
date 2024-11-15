@@ -8,6 +8,7 @@ import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
+import requirements2Z3.rqt.ImpliesFormula;
 import requirements2Z3.rqt.IsNotStartup;
 import requirements2Z3.rqt.IsStartup;
 import requirements2Z3.rqt.NegationFormula;
@@ -80,6 +81,11 @@ public class GetPreconditionsVariableVisitor implements RQTableVisitor<Set<PForm
 
 	@Override
 	public Set<PFormula> visit(OrFormula orFormula) {
+		throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public Set<PFormula> visit(ImpliesFormula impliesFormula) {
 		throw new UnsupportedOperationException();
 	}
 
