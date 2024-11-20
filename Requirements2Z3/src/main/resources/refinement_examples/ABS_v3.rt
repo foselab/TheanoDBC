@@ -2,23 +2,23 @@ table abs
 vardef
   sp,Real,input;
   br,Real,input;
-  ssa,Real,input;
-  ssb,Real,input;
-  abs,Real,output;
+  ssa,Bool,input;
+  ssb,Bool,input;
+  abs,Bool,output;
 endvardef
 reqdef
-  ((sp>15)&(br>8))&((ssa==1)&(ssb==1)),abs==1;
+  sp>15 & br>8 & (ssa & ssb), abs;
 endreqdef
 endtable
 table abs_prime
 vardef
   sp,Real,input;
   br,Real,input;
-  ssa,Real,input;
-  ssb,Real,input;
-  abs,Real,output;
+  ssa,Bool,input;
+  ssb,Bool,input;
+  abs,Bool,output;
 endvardef
 reqdef
-  ((ssa==1)&(ssb==1))&((sp>20)&(br>9)),abs==1;
+  sp>20 & br>9 & (ssa & ssb), abs;
 endreqdef
 endtable
