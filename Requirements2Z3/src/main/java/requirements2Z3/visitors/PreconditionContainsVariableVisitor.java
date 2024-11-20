@@ -4,6 +4,7 @@ import java.util.Set;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -143,5 +144,15 @@ public class PreconditionContainsVariableVisitor implements RQTableVisitor<Boole
 	@Override
 	public Boolean visit(TimestampDefinition timestampDefinition) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Boolean visit(BooleanVariable booleanVariable) {
+		for(Variable v: variables) {
+			if(v.getName().equals(booleanVariable.getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

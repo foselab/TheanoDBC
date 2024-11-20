@@ -123,8 +123,10 @@ public class ComposedRQTable extends RQTable {
 	
 	// get all the variables from the two contracts
 	private static Variables getVariables(RQTable first, RQTable second) {
-		Variables vars = first.getVariables();
-		vars.addAll(second.getVariables()); // no duplicates since it is a set
+		Variables vars = first.getVariables().getInputVariables();
+		vars.addAll(second.getVariables().getInputVariables());
+		vars.addAll(first.getVariables().getOutputVariables());
+		vars.addAll(second.getVariables().getOutputVariables()); // no duplicates since it is a set
 		return vars;
 	}
 	

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -146,6 +147,11 @@ public class GetPreconditionsVariableVisitor implements RQTableVisitor<Set<PForm
 	
 	@Override
 	public Set<PFormula> visit(TimestampDefinition timestampDefinition) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Set<PFormula> visit(BooleanVariable booleanVariable) {
 		throw new UnsupportedOperationException();
 	}
 }

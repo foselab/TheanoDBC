@@ -2,6 +2,7 @@ package requirements2Z3.visitors;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -60,17 +61,17 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(OrFormula orFormula) {
-		return orFormula.getLeft().accept(this)+"|"+orFormula.getRight().accept(this);
+		return orFormula.getLeft().accept(this)+" | "+orFormula.getRight().accept(this);
 	}
 	
 	@Override
 	public String visit(AndFormula andFormula) {
-		return andFormula.getLeft().accept(this)+"&"+andFormula.getRight().accept(this);
+		return andFormula.getLeft().accept(this)+" & "+andFormula.getRight().accept(this);
 	}
 	
 	@Override
 	public String visit(ImpliesFormula impliesFormula) {
-		return impliesFormula.getLeft().accept(this)+"->"+impliesFormula.getRight().accept(this);
+		return impliesFormula.getLeft().accept(this)+" -> "+impliesFormula.getRight().accept(this);
 	}
 
 	@Override
@@ -80,12 +81,12 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(RelationalExpression relationalExpression) {
-		return "("+relationalExpression.getExp1().accept(this)+relationalExpression.getOp().toString()+relationalExpression.getExp2().accept(this)+")";
+		return relationalExpression.getExp1().accept(this)+relationalExpression.getOp().toString()+relationalExpression.getExp2().accept(this);
 	}
 
 	@Override
 	public String visit(Requirement requirement) {
-		return "\t"+requirement.getPrecondition().accept(this)+","+requirement.getPostcondition().accept(this)+";";
+		return "\t"+requirement.getPrecondition().accept(this)+", "+requirement.getPostcondition().accept(this)+";";
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(UnaryExpression unaryExpression) {
-		return unaryExpression.getOp().toString()+unaryExpression.getOp().toString();
+		return unaryExpression.getOp().getOperator()+unaryExpression.getExp().accept(this);
 	}
 
 	@Override
@@ -134,5 +135,13 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 	@Override
 	public String visit(TimestampDefinition timestampDefinition) {
 		return "Ts="+timestampDefinition.getConstant()+"\n";
+	}
+
+	@Override
+	public String visit(BooleanVariable booleanVariable) {
+		if (booleanVariable.getValue())
+			return booleanVariable.getId();
+		else
+			return "!(" + booleanVariable.getId() + ")";
 	}
 }

@@ -2,6 +2,7 @@ package requirements2Z3.visitors;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -62,4 +63,6 @@ public interface RQTableVisitor<T> {
 	public  T visit(Requirements requirements);
 
 	public T visit(TimestampDefinition timestampDefinition);
+
+	public T visit(BooleanVariable booleanVariable);
 }

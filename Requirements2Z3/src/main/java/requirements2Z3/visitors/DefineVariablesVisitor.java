@@ -2,6 +2,7 @@ package requirements2Z3.visitors;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -107,7 +108,7 @@ public class DefineVariablesVisitor implements RQTableVisitor<String> {
 		String id = variable.getName();
 
 		if (!id.equals("tau")) {
-			if (variable.getType().equals("Int")) {
+			if (variable.getType().equals("Int") | variable.getType().equals("Bool")) {
 				return id + "=Array('" + id + "',I,I)\n";
 			}
 		}
@@ -141,5 +142,10 @@ public class DefineVariablesVisitor implements RQTableVisitor<String> {
 	@Override
 	public String visit(TimestampDefinition timestampDefinition) {
 		return "Ts = Real('Ts')\n";
+	}
+
+	@Override
+	public String visit(BooleanVariable booleanVariable) {
+		throw new UnsupportedOperationException();
 	}
 }

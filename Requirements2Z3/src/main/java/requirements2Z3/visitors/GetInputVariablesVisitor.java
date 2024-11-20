@@ -5,6 +5,7 @@ import java.util.Set;
 
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.DurFormula;
 import requirements2Z3.rqt.Identifier;
@@ -135,6 +136,11 @@ public class GetInputVariablesVisitor implements RQTableVisitor<Set<Variable>> {
 
 	@Override
 	public Set<Variable> visit(TimestampDefinition timestampDefinition) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Set<Variable> visit(BooleanVariable booleanVariable) {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -3,6 +3,7 @@ package requirements2Z3.visitors.translators;
 import requirements2Z3.encodings.Encoder;
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
+import requirements2Z3.rqt.BooleanVariable;
 import requirements2Z3.rqt.Constant;
 import requirements2Z3.rqt.ImpliesFormula;
 import requirements2Z3.rqt.NegationFormula;
@@ -20,14 +21,12 @@ import requirements2Z3.z3formulae.Z3Formula;
 
 public abstract class Table2Z3Visitor implements RQTableVisitor<Z3Formula> {
 
-	
 	private final Encoder encoder;
 
 	public Table2Z3Visitor(Encoder encoder) {
 		this.encoder = encoder;
 	}
 
-	
 	public Encoder getEncoder() {
 		return encoder;
 	}
@@ -78,6 +77,11 @@ public abstract class Table2Z3Visitor implements RQTableVisitor<Z3Formula> {
 	@Override
 	public Z3Formula visit(True true1) {
 		return Z3Formula.getTrue();
+	}
+	
+	@Override
+	public Z3Formula visit(BooleanVariable b) {
+		return b.getValue() ? Z3Formula.getTrue() : Z3Formula.getFalse();
 	}
 
 	@Override
