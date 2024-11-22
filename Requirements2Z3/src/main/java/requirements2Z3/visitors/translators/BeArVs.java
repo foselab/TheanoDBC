@@ -26,7 +26,7 @@ public class BeArVs extends BoundedVisitor {
 					Z3Formula.getPredicate(
 							Z3Formula.getExpression(Z3Formula.getVariable("tau[" + this.getIndex() + "]"), "-",
 									Z3Formula.getVariable("tau[" + j + "]")),
-							Z3Formula.getRelationalOperator(durFormula.getOp().toString()), constant));
+							Z3Formula.getRelationalOperator(durFormula.getOp().getOperator()), constant));
 			for (int n = j; n <= this.getIndex(); n++) {
 				innerAnd = Z3Formula.getAnd(innerAnd, durFormula.getF().accept(new BeArVs(this.getEncoder(), n)));
 			}

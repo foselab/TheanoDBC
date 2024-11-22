@@ -66,7 +66,7 @@ public abstract class Table2Z3Visitor implements RQTableVisitor<Z3Formula> {
 
 	@Override
 	public Z3Formula visit(RelationalExpression relationalExpression) {
-		return Z3Formula.getPredicate((Z3Expression) relationalExpression.getExp1().accept(this), Z3Formula.getRelationalOperator(relationalExpression.getOp().toString()), (Z3Expression)relationalExpression.getExp2().accept(this));
+		return Z3Formula.getPredicate((Z3Expression) relationalExpression.getExp1().accept(this), Z3Formula.getRelationalOperator(relationalExpression.getOp().getOperator()), (Z3Expression)relationalExpression.getExp2().accept(this));
 	}
 		
 	@Override
@@ -86,7 +86,7 @@ public abstract class Table2Z3Visitor implements RQTableVisitor<Z3Formula> {
 
 	@Override
 	public Z3Expression visit(UnaryExpression unaryExpression) {
-		return Z3Formula.getZ3UnaryExpression(unaryExpression.getOp().toString(),(Z3Expression) unaryExpression.getExp().accept(this));
+		return Z3Formula.getZ3UnaryExpression(unaryExpression.getOp().getOperator(),(Z3Expression) unaryExpression.getExp().accept(this));
 	}
 
 	@Override

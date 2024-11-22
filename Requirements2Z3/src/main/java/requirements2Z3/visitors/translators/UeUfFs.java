@@ -47,11 +47,11 @@ public class UeUfFs extends UnboundedVisitor {
 								Z3Formula.getAnd(
 										Z3Formula.getPredicate(
 												Z3Formula.getVariable("i-" + constant + "/Ts"), 
-												Z3Formula.getDualOperator(durFormula.getOp().toString()), 
+												Z3Formula.getDualOperator(durFormula.getOp().getOperator()), 
 												Z3Formula.getVariable("k")),
 										Z3Formula.getPredicate(
 												Z3Formula.getVariable("k"), 
-												Z3Formula.getDualOperator(durFormula.getOp().toString()), 
+												Z3Formula.getDualOperator(durFormula.getOp().getOperator()), 
 												Z3Formula.getVariable("i"))), 
 								durFormula.getF().accept(this)));
 

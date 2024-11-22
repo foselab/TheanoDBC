@@ -32,7 +32,7 @@ public class BeArFs extends BoundedVisitor  {
 		Z3Expression constant = Z3Formula.getConstant(Double.toString(durFormula.getConstant()));
 
 		Z3Formula part1 = Z3Formula.getPredicate(Z3Formula.getVariable("tau[i]"),Z3Formula.getRelationalOperator(">="),constant);
-		Z3Formula part2 = Z3Formula.getPredicate(constant,Z3Formula.getRelationalOperator(durFormula.getOp().toString()),Z3Formula.getVariable("Ts"));
+		Z3Formula part2 = Z3Formula.getPredicate(constant,Z3Formula.getRelationalOperator(durFormula.getOp().getOperator()),Z3Formula.getVariable("Ts"));
 
 		Z3Formula part3 = Z3Formula.getTrue();
 

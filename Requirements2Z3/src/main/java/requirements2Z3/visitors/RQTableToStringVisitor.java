@@ -36,7 +36,7 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(DurFormula durFormula) {
-		return "dur"+"("+durFormula.getF().accept(this)+")"+durFormula.getOp()+durFormula.getConstant();
+		return "dur"+"("+durFormula.getF().accept(this)+")"+durFormula.getOp().getOperator()+durFormula.getConstant();
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(RelationalExpression relationalExpression) {
-		return relationalExpression.getExp1().accept(this)+relationalExpression.getOp().toString()+relationalExpression.getExp2().accept(this);
+		return relationalExpression.getExp1().accept(this)+relationalExpression.getOp().getOperator()+relationalExpression.getExp2().accept(this);
 	}
 
 	@Override

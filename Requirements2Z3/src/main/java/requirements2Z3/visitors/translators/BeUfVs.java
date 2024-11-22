@@ -35,7 +35,7 @@ public class BeUfVs extends BoundedVisitor  {
 			Z3Formula innerAnd = 
 					Z3Formula.getPredicate(
 							Z3Formula.getVariable("tau(" + this.getIndex() + ")-tau(" + j + ")"), 
-							Z3Formula.getRelationalOperator(durFormula.getOp().toString()), 
+							Z3Formula.getRelationalOperator(durFormula.getOp().getOperator()), 
 							constant);
 			for (int n = j; n <= this.getIndex(); n++) {
 				innerAnd = Z3Formula.getAnd(innerAnd, durFormula.getF().accept(new BeUfVs(this.getEncoder(), n)));
