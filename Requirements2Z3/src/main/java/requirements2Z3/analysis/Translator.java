@@ -148,10 +148,10 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("solver.add(" + this.encoder.getMonotonicityConstraint() + ")\n\n");
 							
 		// convert requirements to z3formula
-		Z3Formula A1 = RQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
-		Z3Formula G1 = RQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
-		Z3Formula A2 = NewRQTable.getRequirements().getRequirement(0).getPrecondition().accept(z3visitor);
-		Z3Formula G2 = NewRQTable.getRequirements().getRequirement(0).getPostcondition().accept(z3visitor);
+		Z3Formula A1 = RQTable.getTableRequirement().getPrecondition().accept(z3visitor);
+		Z3Formula G1 = RQTable.getTableRequirement().getPostcondition().accept(z3visitor);
+		Z3Formula A2 = NewRQTable.getTableRequirement().getPrecondition().accept(z3visitor);
+		Z3Formula G2 = NewRQTable.getTableRequirement().getPostcondition().accept(z3visitor);
 		
 		String A1inA2 = Z3Formula.getImplies(A1, A2).toString(); // A1 ⇒ A2
 		String G2inG1 = Z3Formula.getImplies(G2, G1).toString(); // G2 ⇒ G1
