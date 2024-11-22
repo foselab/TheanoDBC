@@ -28,6 +28,31 @@ public class RQTable {
 		return requirements;
 	}
 	
+	public Requirement getTableRequirement() {
+		int n_req = this.getRequirements().getRequirements().size();
+		
+		if (n_req < 2)
+			return this.getRequirements().getRequirement(0);
+		
+		Requirement fst_req = this.getRequirements().getRequirement(0);
+		Requirement snd_req = this.getRequirements().getRequirement(1);
+
+		PFormula precondition = new OrFormula(fst_req.getPrecondition(), snd_req.getPrecondition());
+
+		for(int i=2; i<n_req; i++) {
+			precondition = new OrFormula(precondition, this.getRequirements().getRequirement(i).getPrecondition());
+		}
+
+		PFormula postcondition = new ImpliesFormula(fst_req.getPrecondition(), fst_req.getPostcondition());
+
+		for(int i=1; i<n_req; i++) {
+			Requirement current = this.getRequirements().getRequirement(i);
+			postcondition = new AndFormula(postcondition, new ImpliesFormula(current.getPrecondition(), current.getPostcondition()));
+		}
+
+		return new Requirement(precondition, postcondition);
+	}
+	
 	public void setRequirements(Requirements req) {
 		this.requirements = req;
 	}

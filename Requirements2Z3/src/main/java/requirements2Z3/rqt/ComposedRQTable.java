@@ -131,8 +131,8 @@ public class ComposedRQTable extends RQTable {
 	}
 	
 	private static Requirements composeRequirements(RQTable first, RQTable second) {
-		Requirement fst = first.getRequirements().getRequirement(0);
-		Requirement snd = second.getRequirements().getRequirement(0);
+		Requirement fst = first.getTableRequirement();
+		Requirement snd = second.getTableRequirement();
 		
 		PFormula A1 = fst.getPrecondition();
 		PFormula G1 = fst.getPostcondition();
