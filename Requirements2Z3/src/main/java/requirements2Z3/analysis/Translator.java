@@ -163,8 +163,12 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("\tprint(f\"{NewRQTableName} refines {RQTableName} (compatible update) \")\n");
 		wt.write("else:\n");
 		wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended)\")\n");
-		wt.write("\tprint(\"Model example:\")\n");
-		wt.write("\tprint(solver.model())");
+		wt.write("\tprint(\"\\nCounterexample:\")\n");
+		wt.write("\tmodel=solver.model()\n");
+		wt.write("\tprint(\"Variable \\t| Value\")\n");
+		wt.write("\tfor v in model:\n");
+		wt.write("\t\tif v.name() != \"tau\":\n");
+		wt.write("\t\t\tprint(f\"{v} \\t\\t| {model[v]}\")\n");	
 		
 		sc.close();
 		wt.close();
