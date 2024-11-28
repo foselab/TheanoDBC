@@ -10,6 +10,7 @@ import generated.matlabParser;
 import requirements2Z3.consistency.Functionality;
 import requirements2Z3.encodings.Encoder;
 import requirements2Z3.rqt.RQTable;
+import requirements2Z3.rqt.Requirement;
 import requirements2Z3.rqt.Variables;
 import requirements2Z3.visitors.DefineVariablesVisitor;
 import requirements2Z3.visitors.translators.Table2Z3Visitor;
@@ -147,17 +148,23 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("# Timestamp structure monotonicity\n");
 		wt.write("solver.add(" + this.encoder.getMonotonicityConstraint() + ")\n\n");
 							
+		// get combined requirement for the two tables
+		Requirement R1 = RQTable.getTableRequirement();
+		Requirement R2 = NewRQTable.getTableRequirement();
+		
 		// convert requirements to z3formula
-		Z3Formula A1 = RQTable.getTableRequirement().getPrecondition().accept(z3visitor);
-		Z3Formula G1 = RQTable.getTableRequirement().getPostcondition().accept(z3visitor);
-		Z3Formula A2 = NewRQTable.getTableRequirement().getPrecondition().accept(z3visitor);
-		Z3Formula G2 = NewRQTable.getTableRequirement().getPostcondition().accept(z3visitor);
+		Z3Formula A1 = R1.getPrecondition().accept(z3visitor);
+		Z3Formula G1 = R1.getPostcondition().accept(z3visitor);
+		Z3Formula A2 = R2.getPrecondition().accept(z3visitor);
+		Z3Formula G2 = R2.getPostcondition().accept(z3visitor);
 		
 		String A1inA2 = Z3Formula.getImplies(A1, A2).toString(); // A1 ⇒ A2
 		String G2inG1 = Z3Formula.getImplies(G2, G1).toString(); // G2 ⇒ G1
 		
 		wt.write("# Refinement condition \n");
-		wt.write("refinement_condition=And("+A1inA2+","+G2inG1+")\n");
+		wt.write("refinement_condition_A="+A1inA2+"\n");
+		wt.write("refinement_condition_G="+G2inG1+"\n\n");
+		wt.write("refinement_condition=And(refinement_condition_A,refinement_condition_G)\n");
 		wt.write("solver.add(Not(refinement_condition))\n\n");
 		wt.write("if solver.check() == unsat:\n");
 		wt.write("\tprint(f\"{NewRQTableName} refines {RQTableName} (compatible update) \")\n");
@@ -165,10 +172,12 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended)\")\n");
 		wt.write("\tprint(\"\\nCounterexample:\")\n");
 		wt.write("\tmodel=solver.model()\n");
-		wt.write("\tprint(\"Variable \\t| Value\")\n");
+		wt.write("\tprint(\"Variable\".ljust(20) + \"|\" + \" Value\")\n");
+		wt.write("\tprint(\"-\" * 40)\n");
+		wt.write("\t# Print each variable and its value\n");
 		wt.write("\tfor v in model:\n");
 		wt.write("\t\tif v.name() != \"tau\":\n");
-		wt.write("\t\t\tprint(f\"{v} \\t\\t| {model[v]}\")\n");	
+		wt.write("\t\t\tprint(str(v).ljust(20) + \"| \" + str(model[v]))\n");
 		
 		sc.close();
 		wt.close();
