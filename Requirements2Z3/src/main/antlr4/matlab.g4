@@ -112,10 +112,10 @@ logical_expression returns [PFormula f]
 
 atomic_expression returns [PFormula f]
 	: TRUE								{$f=new True();}
-	| i=IDENTIFIER						{$f=new BooleanVariable($i.text, true);} 
-	| NOT LPAR logical_expression RPAR	{$f=new NegationFormula($logical_expression.f);}
 	| is_startup 						{$f=$is_startup.f;}
 	| is_not_startup  					{$f=$is_not_startup.f;}
+	| i=IDENTIFIER						{$f=new BooleanVariable($i.text, true);} 
+	| NOT logical_expression			{$f=new NegationFormula($logical_expression.f);}
 	| dur_expression					{$f=$dur_expression.f;}
 	| LPAR logical_expression RPAR		{$f=$logical_expression.f;}
 	| relational_expression 			{$f=$relational_expression.f;}
@@ -170,19 +170,19 @@ BOOL
 	;
 
 NOT
-	: '!'
+	: '!' | 'not'
 	;
 
 AND
-	: '&'
+	: '&' | 'and'
 	;
 
 OR
-	: '|'
+	: '|' | 'or'
 	;
 
 IMPLIES
-	: '->'
+	: '->' | 'implies'
 	;
 
 MULT
