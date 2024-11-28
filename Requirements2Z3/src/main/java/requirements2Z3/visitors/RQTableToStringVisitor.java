@@ -61,17 +61,17 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 
 	@Override
 	public String visit(OrFormula orFormula) {
-		return orFormula.getLeft().accept(this)+" | "+orFormula.getRight().accept(this);
+		return "("+orFormula.getLeft().accept(this)+" | "+orFormula.getRight().accept(this)+")";
 	}
 	
 	@Override
 	public String visit(AndFormula andFormula) {
-		return andFormula.getLeft().accept(this)+" & "+andFormula.getRight().accept(this);
+		return "("+andFormula.getLeft().accept(this)+" & "+andFormula.getRight().accept(this)+")";
 	}
 	
 	@Override
 	public String visit(ImpliesFormula impliesFormula) {
-		return impliesFormula.getLeft().accept(this)+" -> "+impliesFormula.getRight().accept(this);
+		return "("+impliesFormula.getLeft().accept(this)+" -> "+impliesFormula.getRight().accept(this)+")";
 	}
 
 	@Override
