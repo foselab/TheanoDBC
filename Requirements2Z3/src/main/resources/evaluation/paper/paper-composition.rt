@@ -1,0 +1,9 @@
+vardef
+	ac,Bool,input;
+	sp,Real,input;
+	st,Real,input;
+	th,Real,input;
+endvardef
+reqdef
+	(((ac & sp<st) & th>0.0) | !((th>0.0 & sp>0.0))), (th>0.0 & sp>0.0);
+endreqdef
