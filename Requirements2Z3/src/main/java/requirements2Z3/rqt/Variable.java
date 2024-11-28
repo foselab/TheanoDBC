@@ -38,13 +38,12 @@ public class Variable {
         Variable other = (Variable) obj;
 
         return Objects.equals(this.name, other.name) &&
-               Objects.equals(this.type, other.type) &&
-               Objects.equals(this.inputOutput, other.inputOutput);
+               Objects.equals(this.type, other.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.type, this.inputOutput);
+        return Objects.hash(this.name, this.type);
     }
 
 	public <T> T accept(RQTableVisitor<T> visitor) {
