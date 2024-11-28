@@ -81,7 +81,7 @@ public abstract class Table2Z3Visitor implements RQTableVisitor<Z3Formula> {
 	
 	@Override
 	public Z3Formula visit(BooleanVariable b) {
-		return b.getValue() ? Z3Formula.getTrue() : Z3Formula.getFalse();
+		return b.getValue() ? Z3Formula.getConstant(b.getId()) : Z3Formula.getConstant("Not("+b.getId()+")");
 	}
 
 	@Override

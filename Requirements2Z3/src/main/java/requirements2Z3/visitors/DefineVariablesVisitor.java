@@ -108,8 +108,12 @@ public class DefineVariablesVisitor implements RQTableVisitor<String> {
 		String id = variable.getName();
 
 		if (!id.equals("tau")) {
-			if (variable.getType().equals("Int") | variable.getType().equals("Bool")) {
+			if (variable.getType().equals("Int")) {
 				return id + "=Array('" + id + "',I,I)\n";
+			}
+			
+			if (variable.getType().equals("Bool")) {
+				return id + "=Bool('" + id + "')\n";
 			}
 		}
 		return id + "=Array('" + id + "',I,R)\n";
