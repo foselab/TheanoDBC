@@ -10,7 +10,6 @@ reqdef
 	limits & !standby & !apfail & supported, pullup;
 endreqdef
 endtable
-
 table Composition
 vardef
 	standby,Bool,input;

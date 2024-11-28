@@ -11,6 +11,8 @@ if [[ "$os" == "Darwin" ]]; then
 	sed_cmd="gsed"
 fi
 
+cd ..
+
 mvn eclipse:clean
 mvn eclipse:eclipse
 
