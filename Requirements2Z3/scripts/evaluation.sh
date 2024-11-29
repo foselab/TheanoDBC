@@ -51,10 +51,13 @@ for table in "${TABLES[@]}"; do
     sleep 2
     
     composition_file_content=$(cat "$composition_file_path")
-    system_table=$(awk '/table/, /endtable/' "$refinement_file_path")
-    composition_table=$(echo "$composition_file_content" | awk '/table Composition/, /endtable/')
-    refinement_file_content="${system_table}${composition_table}"
-    echo "$refinement_file_content" > "$refinement_file_path"
+    system_table=$(sed '/endtable/ q' "$refinement_file_path")
+    {
+        echo "$system_table"
+        echo "table Composition"
+        echo "$composition_file_content"
+        echo "endtable"
+    } > "$refinement_file_path"
 
     # Check refinement for each table
     echo -e "\n\n***********************************************"
@@ -62,7 +65,7 @@ for table in "${TABLES[@]}"; do
     echo -e "***********************************************"
 
     eval $cmd -i "$refinement_file_path" -o "$refinement_python_file" -t refinement $redirect_output
-    sleep 1
+    sleep 2
 
     timeout 10 python "$refinement_python_file"
 done
