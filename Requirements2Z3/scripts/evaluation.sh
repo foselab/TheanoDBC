@@ -48,7 +48,7 @@ for table in "${TABLES[@]}"; do
     refinement_python_file="$RESOURCES_PATH/$table/${table}_refinement.py"
 
     eval $cmd -i "$file_path" -o "$composition_file_path" -e BeUfFs -t composition -b 6 -a
-    sleep 1
+    sleep 2
     
     composition_file_content=$(cat "$composition_file_path")
     system_table=$(awk '/table/, /endtable/' "$refinement_file_path")
