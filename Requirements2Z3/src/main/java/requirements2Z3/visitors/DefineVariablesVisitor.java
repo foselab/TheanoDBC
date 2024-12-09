@@ -1,5 +1,8 @@
 package requirements2Z3.visitors;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import requirements2Z3.rqt.AndFormula;
 import requirements2Z3.rqt.ArithmeticExpression;
 import requirements2Z3.rqt.BooleanVariable;
@@ -123,9 +126,14 @@ public class DefineVariablesVisitor implements RQTableVisitor<String> {
 	@Override
 	public String visit(Variables variables) {
 		StringBuilder b = new StringBuilder();
+	    Set<String> variableNames = new HashSet<>();
 
 		for (Variable v : variables.getVariables()) {
-			b.append(v.accept(this));
+			String variableName = v.getName();
+			if (!variableNames.contains(variableName)) {
+				variableNames.add(variableName);
+	            b.append(v.accept(this));
+	        }
 		}
 		return b.toString();
 	}
