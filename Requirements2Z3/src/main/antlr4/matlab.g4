@@ -59,7 +59,8 @@ requirement returns [Requirement rq]
 	;
 
 primary_expression returns [Expression exp]
-	: i=IDENTIFIER {$exp=new Identifier($i.text);}
+	: LPAR arithmetic_expression RPAR {$exp=$arithmetic_expression.exp;}
+	| i=IDENTIFIER {$exp=new Identifier($i.text);}
 	| c=CONSTANT {$exp=new Constant(Double.parseDouble($c.text));}
 	| p=prev_expression {$exp=$p.exp;}
 	;
@@ -89,11 +90,12 @@ arithmetic_expression returns [Expression exp]
 relational_expression returns [PFormula f]
 	: l=arithmetic_expression rop=(GE_OP | LE_OP | EQ_OP | LEQ_OP | GEQ_OP | NE_OP) r=arithmetic_expression
 	  {$f=new RelationalExpression($l.exp,RelationalOperator.toRelationalOperator($rop.text),$r.exp);}
+  	| LPAR relational_expression RPAR {$f=$relational_expression.f;}
 	;
 	
 and_expression returns [PFormula f]
     : atomic_expression {$f=$atomic_expression.f;}
-    | l=and_expression AND r=atomic_expression {$f=new AndFormula($l.f,$r.f);}
+    | l=and_expression AND atomic_expression {$f=new AndFormula($l.f,$atomic_expression.f);}
     ;
     
 or_expression returns [PFormula f]
@@ -115,7 +117,8 @@ atomic_expression returns [PFormula f]
 	| is_startup 						{$f=$is_startup.f;}
 	| is_not_startup  					{$f=$is_not_startup.f;}
 	| i=IDENTIFIER						{$f=new BooleanVariable($i.text, true);} 
-	| NOT logical_expression			{$f=new NegationFormula($logical_expression.f);}
+	| NOT i=IDENTIFIER					{$f=new BooleanVariable($i.text, false);} 
+	| NOT LPAR logical_expression RPAR	{$f=new NegationFormula($logical_expression.f);}
 	| dur_expression					{$f=$dur_expression.f;}
 	| LPAR logical_expression RPAR		{$f=$logical_expression.f;}
 	| relational_expression 			{$f=$relational_expression.f;}

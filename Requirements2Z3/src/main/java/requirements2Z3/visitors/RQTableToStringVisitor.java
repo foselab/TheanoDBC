@@ -142,6 +142,6 @@ public class RQTableToStringVisitor implements RQTableVisitor<String>{
 		if (booleanVariable.getValue())
 			return booleanVariable.getId();
 		else
-			return "!(" + booleanVariable.getId() + ")";
+			return "!" + booleanVariable.getId();
 	}
 }
