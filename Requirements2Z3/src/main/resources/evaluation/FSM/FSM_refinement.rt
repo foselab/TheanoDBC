@@ -1,0 +1,44 @@
+table System
+vardef
+	standby,Bool,input;
+	apfail,Bool,input;
+	supported,Bool,input;
+	limits,Bool,input;
+	pullup,Bool,output;
+endvardef
+reqdef
+	limits & !standby & !apfail & supported, pullup;
+endreqdef
+endtable
+table Composition
+vardef
+	standby,Bool,input;
+	apfail,Bool,input;
+	supported,Bool,input;
+	good,Bool,input;
+	ap_transition_state,Bool,input;
+	ap_nominal_state,Bool,input;
+	ap_maneuver_state,Bool,input;
+	ap_standby_state,Bool,input;
+	mode,Bool,input;
+	request,Bool,input;
+	limits,Bool,input;
+	sen_nominal_state,Bool,input;
+	sen_transition_state,Bool,input;
+	sen_fault_state,Bool,input;
+	mode,Bool,output;
+	request,Bool,output;
+	pullup,Bool,output;
+	ap_transition_state_out,Bool,output;
+	ap_nominal_state_out,Bool,output;
+	ap_maneuver_state_out,Bool,output;
+	ap_standby_state_out,Bool,output;
+	good,Bool,output;
+	sen_nominal_state_out,Bool,output;
+	sen_transition_state_out,Bool,output;
+	sen_fault_state_out,Bool,output;
+endvardef
+reqdef
+	(((((((((((ap_nominal_state & standby) | (((ap_transition_state & good) & supported) & !standby)) | ((ap_maneuver_state & standby) & good)) | (ap_standby_state & apfail)) | ((ap_nominal_state & !good) & !standby)) | (standby & ap_transition_state)) | ((ap_standby_state & !standby) & !apfail)) | ((!standby & !apfail) & supported)) | (((ap_maneuver_state & supported) & good) & !standby)) & (((((sen_nominal_state & !request) & !limits) | limits) | ((sen_fault_state & !request) & !limits)) | ((sen_transition_state & request) & mode))) | !((((((((((((ap_nominal_state & standby) -> ap_standby_state_out) & ((((ap_transition_state & good) & supported) & !standby) -> ap_nominal_state_out)) & (((ap_maneuver_state & standby) & good) -> ap_standby_state_out)) & ((ap_standby_state & apfail) -> ap_maneuver_state_out)) & (((ap_nominal_state & !good) & !standby) -> ap_maneuver_state_out)) & ((standby & ap_transition_state) -> ap_standby_state_out)) & (((ap_standby_state & !standby) & !apfail) -> ap_transition_state_out)) & (((!standby & !apfail) & supported) -> pullup)) & ((((ap_maneuver_state & supported) & good) & !standby) -> ap_transition_state_out)) & ((((((sen_nominal_state & !request) & !limits) -> sen_transition_state_out) & (limits -> sen_fault_state_out)) & (((sen_fault_state & !request) & !limits) -> sen_transition_state_out)) & (((sen_transition_state & request) & mode) -> sen_nominal_state_out))))), (((((((((((ap_nominal_state & standby) -> ap_standby_state_out) & ((((ap_transition_state & good) & supported) & !standby) -> ap_nominal_state_out)) & (((ap_maneuver_state & standby) & good) -> ap_standby_state_out)) & ((ap_standby_state & apfail) -> ap_maneuver_state_out)) & (((ap_nominal_state & !good) & !standby) -> ap_maneuver_state_out)) & ((standby & ap_transition_state) -> ap_standby_state_out)) & (((ap_standby_state & !standby) & !apfail) -> ap_transition_state_out)) & (((!standby & !apfail) & supported) -> pullup)) & ((((ap_maneuver_state & supported) & good) & !standby) -> ap_transition_state_out)) & ((((((sen_nominal_state & !request) & !limits) -> sen_transition_state_out) & (limits -> sen_fault_state_out)) & (((sen_fault_state & !request) & !limits) -> sen_transition_state_out)) & (((sen_transition_state & request) & mode) -> sen_nominal_state_out)));
+endreqdef
+endtable
