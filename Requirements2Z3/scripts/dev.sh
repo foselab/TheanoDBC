@@ -150,3 +150,7 @@ fi
 if [ "$run_completeness" = true ] || [ "$run_consistency" = true ] || [ "$run_refinement" = true ]; then
     find "$RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} +
 fi
+
+while true; do
+    sleep 1
+done

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Set the classpath
+# Configuration
 CLASSPATH="../target/classes:\
 $HOME/.m2/repository/org/antlr/antlr4/4.5/antlr4-4.5.jar:\
 $HOME/.m2/repository/org/antlr/antlr4-runtime/4.5/antlr4-runtime-4.5.jar:\
@@ -19,56 +19,97 @@ JVM_OPTS="-Dfile.encoding=UTF-8 \
 # Set the main class
 MAIN_CLASS="requirements2Z3.Main"
 
-# Set the resources path
-RESOURCES_PATH="../src/main/resources/evaluation"
+# Paths
+BASE_RESOURCES_PATH="../src/main/resources/evaluation"
+FSM_RESOURCES_PATH="$BASE_RESOURCES_PATH/FSM"
+TUSTIN_RESOURCES_PATH="$BASE_RESOURCES_PATH/TUI"
+RESULT_PATH="$BASE_RESOURCES_PATH/results"
+mkdir -p "$RESULT_PATH"
 
-# Set the command based on dev variable
+# Command
 cmd="java $JVM_OPTS -classpath \"$CLASSPATH\" $MAIN_CLASS"
 
-# Tables to be checked
-TABLES=("paper" "fsm")
+# Functions
+run_with_timer() {
+    local start_time=$(date +%s.%N)
+    eval "$@" > /dev/null 2>&1
+    local end_time=$(date +%s.%N)
+    python3 -c "print($end_time - $start_time)"
+}
 
-show_java_output=false
+cleanup_files() {
+    find "$BASE_RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} +
+    find "$BASE_RESOURCES_PATH" -type f -name "*.bak" -exec rm -f {} +
+}
 
+show_java_output=true
 redirect_output=""
 if [ "$show_java_output" = false ]; then
     redirect_output="> /dev/null 2>&1"
 fi
 
-for table in "${TABLES[@]}"; do
-    # Composition for each table
-    echo -e "\n\n$table\n"
-    echo -e "***********************************************"
-    echo -e "Composition"
-    echo -e "***********************************************"
+trap "echo -e '\nCtrl+C detected. Exiting...'; cleanup_python_files; exit 0" SIGINT
 
-    file_path="$RESOURCES_PATH/$table/$table.rt"
-    composition_file_path="$RESOURCES_PATH/$table/$table-composition.rt"
-    refinement_file_path="$RESOURCES_PATH/$table/$table-refinement.rt"
-    refinement_python_file="$RESOURCES_PATH/$table/${table}_refinement.py"
+# Iteration Count
+ITERATIONS=50
 
-    eval $cmd -i "$file_path" -o "$composition_file_path" -e BeUfFs -t composition -b 6 -a
-    sleep 2
-    
-    composition_file_content=$(cat "$composition_file_path")
-    system_table=$(sed '/endtable/ q' "$refinement_file_path")
-    {
-        echo "$system_table"
-        echo "table Composition"
-        echo "$composition_file_content"
-        echo "endtable"
-    } > "$refinement_file_path"
+# FSM Composition
+composition_time_file="$RESULT_PATH/E1.txt"
+[ -f "$composition_time_file" ] && mv "$composition_time_file" "${composition_time_file}.bak"
+> "$composition_time_file"
 
-    # Check refinement for each table
-    echo -e "\n\n***********************************************"
-    echo -e "Refinement check"
-    echo -e "***********************************************"
-
-    eval $cmd -i "$refinement_file_path" -o "$refinement_python_file" -t refinement $redirect_output
-    sleep 2
-
-    timeout 10 python "$refinement_python_file"
+for ((i = 1; i <= ITERATIONS; i++)); do
+    echo "Running FSM composition iteration $i..."
+    elapsed_time=$(run_with_timer "$cmd -i \"$FSM_RESOURCES_PATH/FSM.rt\" -o \"$FSM_RESOURCES_PATH/FSM_composition.rt\" -e BeUfFs -t composition -b 6 -a" $redirect_output)
+    echo "$elapsed_time" >> "$composition_time_file"
 done
 
-# Remove python files if any checks were run
-find "$RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} +
+# Refinement FSM
+refinement_file_path="$FSM_RESOURCES_PATH/FSM_refinement.rt"
+composition_file_content=$(cat "$FSM_RESOURCES_PATH/FSM_composition.rt")
+system_table=$(sed '/endtable/ q' "$refinement_file_path")
+{
+    echo "$system_table"
+    echo "table Composition"
+    echo "$composition_file_content"
+    echo "endtable"
+} > "$refinement_file_path"
+
+refinement_time_file="$RESULT_PATH/E2.txt"
+[ -f "$refinement_time_file" ] && mv "$refinement_time_file" "${refinement_time_file}.bak"
+> "$refinement_time_file"
+
+for ((i = 1; i <= ITERATIONS; i++)); do
+    echo "Running FSM refinement iteration $i..."
+    elapsed_time=$(run_with_timer "$cmd -i \"$refinement_file_path\" -o \"$FSM_RESOURCES_PATH/FSM_refinement.py\" -t refinement" $redirect_output)
+    if ! timeout 10 python "$FSM_RESOURCES_PATH/FSM_refinement.py"; then
+        echo "Python script timed out or failed on iteration $i" >> "$refinement_time_file"
+    fi
+    echo "$elapsed_time" >> "$refinement_time_file"
+done
+
+# TUI Refinement
+e=3
+TABLES=("TUI_v2" "TUI_v3")
+for table in "${TABLES[@]}"; do
+    echo "Processing TUI table: $table"
+    refinement_time_file="$RESULT_PATH/E${e}.txt"
+    ((e++))
+    [ -f "$refinement_time_file" ] && mv "$refinement_time_file" "${refinement_time_file}.bak"
+    > "$refinement_time_file"
+    
+    for ((i = 1; i <= ITERATIONS; i++)); do
+        echo "Running refinement for table $table, iteration $i..."
+        refinement_file_path="$TUSTIN_RESOURCES_PATH/${table}.rt"
+        refinement_python_file="$TUSTIN_RESOURCES_PATH/${table}_refinement.py"
+        
+        elapsed_time=$(run_with_timer "$cmd -i \"$refinement_file_path\" -o \"$refinement_python_file\" -t refinement" $redirect_output)
+        if ! timeout 10 python "$refinement_python_file"; then
+            echo "Python script timed out or failed on iteration $i" >> "$refinement_time_file"
+        fi
+        echo "$elapsed_time" >> "$refinement_time_file"
+    done
+done
+
+cleanup_files
+echo -e "\nDone"
