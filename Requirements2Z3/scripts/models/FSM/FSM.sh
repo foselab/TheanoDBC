@@ -56,7 +56,9 @@ refinement_file_path="$BASE_RESOURCES_PATH/${current_version}_refinement.rt"
 composition_file_content=$(cat "$composition_file_path")
 system_file_content=$(cat "$BASE_RESOURCES_PATH/${model_name}_system.rt")
 
-echo "$system_file_content" > "$refinement_file_path"
+echo "table System" > "$refinement_file_path"
+echo "$system_file_content" >> "$refinement_file_path"
+echo "endtable" >> "$refinement_file_path"
 echo "table Composition" >> "$refinement_file_path"
 echo "$composition_file_content" >> "$refinement_file_path"
 echo "endtable" >> "$refinement_file_path"

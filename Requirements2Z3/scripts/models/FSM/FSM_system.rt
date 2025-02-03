@@ -1,4 +1,3 @@
-table System
 vardef
 	standby,Bool,input;
 	apfail,Bool,input;
@@ -9,4 +8,3 @@ endvardef
 reqdef
 	limits & !standby & !apfail & supported, pullup;
 endreqdef
-endtable
