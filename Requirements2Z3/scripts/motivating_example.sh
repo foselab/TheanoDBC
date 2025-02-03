@@ -37,7 +37,7 @@ if [ "$show_java_output" = false ]; then
     redirect_output="> /dev/null 2>&1"
 fi
 
-trap "echo -e '\nCtrl+C detected. Exiting...'; cleanup_python_files; exit 0" SIGINT
+trap "echo -e '\nCtrl+C detected. Exiting...'; cleanup_files; exit 0" SIGINT
 
 # Composition
 echo -e "\nRunning composition..."
