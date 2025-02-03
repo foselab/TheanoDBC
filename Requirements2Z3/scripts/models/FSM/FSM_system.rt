@@ -1,0 +1,12 @@
+table System
+vardef
+	standby,Bool,input;
+	apfail,Bool,input;
+	supported,Bool,input;
+	limits,Bool,input;
+	pullup,Bool,output;
+endvardef
+reqdef
+	limits & !standby & !apfail & supported, pullup;
+endreqdef
+endtable

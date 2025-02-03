@@ -27,3 +27,7 @@ Requirements2Z3/src/main/resources/**/*.py
 .vsWorkspace/
 Workspace/*
 .project
+Requirements2Z3/scripts/models/**/*_refinement.rt
+Requirements2Z3/scripts/models/**/*_composition.rt
+Requirements2Z3/scripts/models/**/*.py
+
