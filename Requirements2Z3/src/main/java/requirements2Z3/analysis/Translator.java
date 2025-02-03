@@ -174,30 +174,77 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\tcondition_result = is_true(simplified_condition)\n");
         wt.write("\tprint(f\"{name} = {condition_result}\")\n\n");
         wt.write("\treturn variable_values, condition_result\n\n");
+        
+        // Prover
+        wt.write("# Function to prove conditions\n");
+        wt.write("def prove(condition, name, details=False):\n");
+        wt.write("\tsolver = Solver()\n");
+        wt.write("\tsolver.add(Not(condition))\n");
+        wt.write("\tif solver.check() == unsat: \n");
+        wt.write("\t\tprint(f\"{name} holds.\")\n");
+        wt.write("\telse:\n");
+        wt.write("\t\tprint(f\"{name} does not hold.\")\n");
+        wt.write("\t\tif(details):\n");
+        wt.write("\t\t\tmodel = solver.model()\n");
+        wt.write("\t\t\tprint_counterexample(model)\n\n");
+        
+        // Missing assertions
+        wt.write("# Function to find missing elements in a refinement condition\n");
+        wt.write("def fix_refinement_condition(source, target, name):\n");
+        wt.write("\tsolver = Solver()\n");
+        wt.write("\tupdated_target = target  # Start with the original target\n\n");
+        wt.write("\twhile True:\n");
+        wt.write("\t\tsolver.push()\n");
+        wt.write("\t\tsolver.add(source, Not(updated_target))  # Check source => target\n");
+        wt.write("\t\tif solver.check() == sat:\n");
+        wt.write("\t\t\tmodel = solver.model()\n");
+        wt.write("\t\t\tprint(f\"Refinement failed for {name}, finding missing terms...\")\n\n");
+        wt.write("\t\t\t# Find missing terms in the source that were true in the counterexample\n");
+        wt.write("\t\t\tmissing_terms = []\n");
+        wt.write("\t\t\tfor term in source.children():\n");
+        wt.write("\t\t\t\tif model.evaluate(term):\n");
+        wt.write("\t\t\t\t\tmissing_terms.append(term)\n\n");
+        wt.write("\t\t\tif not missing_terms:\n");
+        wt.write("\t\t\t\tprint(f\"No missing terms found for {name}, something is wrong.\")\n");
+        wt.write("\t\t\t\tbreak\n\n");
+        wt.write("\t\t\t# Add missing terms to the target\n");
+        wt.write("\t\t\tupdated_target = Or(updated_target, Or(*missing_terms))\n");
+        wt.write("\t\t\tprint(f\"Added {missing_terms} to {name}.\")\n");
+        wt.write("\t\telse:\n");
+        wt.write("\t\t\tprint(f\"{name} is now valid!\")\n");
+        wt.write("\t\t\tbreak\n");
+        wt.write("\t\tsolver.pop()\n\n");
+        wt.write("\treturn updated_target\n\n");
 
         // Contracts
         wt.write("# Contracts\n");
         wt.write("A1="+A1_str+"\n");
         wt.write("A2="+A2_str+"\n");
         wt.write("G1="+G1_str+"\n");
-        wt.write("G2="+G2_str+"\n\n");
+        wt.write("G2="+G2_str+"\n");
         wt.write("C1=Implies(A1,G1)\n");
-        wt.write("C2=Implies(A2,G2)\n");
-        //wt.write("solver.add(C1)\n");
-        //wt.write("solver.add(C2)\n\n");
-
+        wt.write("C2=Implies(A2,G2)\n\n");
+                
+        //wt.write("prove(C1, \"C1\")\n");
+        //wt.write("prove(C2, \"C2\")\n");
+        
+        // Add contracts as constraints
+        wt.write("# Contracts constraints\n");
+        wt.write("solver.add(C1==True)\n");
+        wt.write("solver.add(C2==True)\n\n");
+       
         // Refinement conditions
         wt.write("# Refinement conditions \n");
-        wt.write("refinement_condition_A=Implies(A1,A2)\n");
-        wt.write("refinement_condition_G=Implies(G2,G1)\n");
-        wt.write("refinement_condition=And(refinement_condition_A,refinement_condition_G)\n\n");
+        wt.write("refinement_A=Implies(A1,A2)\n");
+        wt.write("refinement_G=Implies(G2,G1)\n");
+        wt.write("refinement_condition=And(refinement_A,refinement_G)\n\n");
 
         // Constraints
         wt.write("# Constraint \n");
-        wt.write("solver.add(A1)\n");
-
-        wt.write("solver.push()\n\n");
+        wt.write("solver.add(A1==True)\n\n");
         
+        wt.write("solver.push()\n\n");
+                
         // Check refinement condition
         wt.write("# Checking refinement condition \n");
         wt.write("solver.add(Not(refinement_condition))\n");
@@ -207,32 +254,28 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
         wt.write("\tmodel = solver.model()\n");
         wt.write("\tprint_counterexample(model)\n");
-        wt.write("solver.pop()\nsolver.push()\n\n");
+        wt.write("\tsolver.pop()\n\n");
         
-        // Verifica G2 => G1
-        wt.write("# Checking guarantees\n");
-        wt.write("solver.add(Not(refinement_condition_G))\n");
-        wt.write("if solver.check() == unsat:\n");
-        wt.write("\tprint(f\"Guarantees hold.\")\n");
+        // Check single refinement conditions
+        wt.write("solver.push()\n");
+        wt.write("if solver.check(Not(refinement_A)) == sat:\n");
+        wt.write("\tprint(\"Assumptions violated.\")\n");
+//        wt.write("\t\tevaluate_condition(A1, model, \"A1\")\n");
+//        wt.write("\t\tevaluate_condition(A2, model, \"A2\")\n");
+//        wt.write("\t\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
         wt.write("else:\n");
-        wt.write("\tprint(f\"Guarantees violated.\")\n");
-        //wt.write("\tprint_counterexample(model)\n");
-        // wt.write("\tevaluate_condition(G1, model, G1)\n");
-        // wt.write("\tevaluate_condition(G2, model, G2)\n");
-        wt.write("solver.pop()\nsolver.push()\n\n");
-                
-        // Verifica A1 => A2
-        wt.write("# Checking assumptions\n");
-        wt.write("solver.add(Not(refinement_condition_A))\n");
-        wt.write("if solver.check() == unsat:\n");
-        wt.write("\tprint(f\"Assumptions hold.\")\n");
+        wt.write("\tprint(\"Assumptions hold.\")\n");
+        wt.write("solver.pop()\n\n");
+      
+        wt.write("solver.push()\n");        
+        wt.write("if solver.check(Not(refinement_G)) == sat:\n");
+        wt.write("\tprint(\"Guarantees violated.\")\n");    
+//        wt.write("\t\tevaluate_condition(G1, model, \"G1\")\n");
+//        wt.write("\t\tevaluate_condition(G2, model, \"G2\")\n");
         wt.write("else:\n");
-        wt.write("\tprint(f\"Assumptions violated.\")\n");
-        wt.write("\tmodel = solver.model()\n");
-        //wt.write("\tprint_counterexample(model)\n");
-        // wt.write("\tevaluate_condition(A1, model, A1)\n");
-        // wt.write("\tevaluate_condition(A2, model, A2)\n");
- 
+        wt.write("\tprint(\"Guarantees hold.\")\n");
+        wt.write("solver.pop()\n");
+        
 		sc.close();
 		wt.close();
 	}
