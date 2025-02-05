@@ -167,7 +167,7 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\t\tcondition,\n");
         wt.write("\t\t*[(eval(var_name), variable_values[var_name]) for var_name in variable_values]\n");
         wt.write("\t)\n\n");
-        wt.write("\tprint(f\"{name} = {substituted_condition}\")\n");
+        //wt.write("\tprint(f\"{name} = {substituted_condition}\")\n");
         wt.write("\t# Simplified condition\n");
         wt.write("\tsimplified_condition = simplify(substituted_condition)\n");
         wt.write("\t# Evaluate the condition\n");
@@ -222,16 +222,6 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("A2="+A2_str+"\n");
         wt.write("G1="+G1_str+"\n");
         wt.write("G2="+G2_str+"\n");
-        wt.write("C1=Implies(A1,G1)\n");
-        wt.write("C2=Implies(A2,G2)\n\n");
-                
-        //wt.write("prove(C1, \"C1\")\n");
-        //wt.write("prove(C2, \"C2\")\n");
-        
-        // Add contracts as constraints
-        wt.write("# Contracts constraints\n");
-        wt.write("solver.add(C1==True)\n");
-        wt.write("solver.add(C2==True)\n\n");
        
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -260,9 +250,9 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("solver.push()\n");
         wt.write("if solver.check(Not(refinement_A)) == sat:\n");
         wt.write("\tprint(\"Assumptions violated.\")\n");
-//        wt.write("\t\tevaluate_condition(A1, model, \"A1\")\n");
-//        wt.write("\t\tevaluate_condition(A2, model, \"A2\")\n");
-//        wt.write("\t\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
+        wt.write("\tevaluate_condition(A1, model, \"A1\")\n");
+        wt.write("\tevaluate_condition(A2, model, \"A2\")\n");
+        //wt.write("\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
         wt.write("else:\n");
         wt.write("\tprint(\"Assumptions hold.\")\n");
         wt.write("solver.pop()\n\n");
@@ -270,8 +260,8 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("solver.push()\n");        
         wt.write("if solver.check(Not(refinement_G)) == sat:\n");
         wt.write("\tprint(\"Guarantees violated.\")\n");    
-//        wt.write("\t\tevaluate_condition(G1, model, \"G1\")\n");
-//        wt.write("\t\tevaluate_condition(G2, model, \"G2\")\n");
+        wt.write("\tevaluate_condition(G1, model, \"G1\")\n");
+        wt.write("\tevaluate_condition(G2, model, \"G2\")\n");
         wt.write("else:\n");
         wt.write("\tprint(\"Guarantees hold.\")\n");
         wt.write("solver.pop()\n");
