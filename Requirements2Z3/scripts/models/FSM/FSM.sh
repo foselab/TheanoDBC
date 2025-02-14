@@ -41,7 +41,7 @@ fi
 
 # Model Name
 model_name="FSM"
-current_version="FSM_v0" # FSM_v0 or FSM_v1
+current_version="FSM_v1" # FSM_v0 or FSM_v1
 
 # Files path
 model_file_path="$BASE_RESOURCES_PATH/${current_version}.rt"

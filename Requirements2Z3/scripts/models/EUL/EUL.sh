@@ -40,9 +40,9 @@ fi
 #trap "echo -e '\nCtrl+C detected. Exiting...'; cleanup_files; exit 0" SIGINT
 
 # Model Name
-model_name="NLG"
-system_name="NLG_v1"
-versions=("NLG_v2")
+model_name="EUL"
+system_name="EUL_v1"
+versions=("EUL_v2")
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement
@@ -69,7 +69,7 @@ for current_version in "${versions[@]}"; do
     refinement_script_path="$BASE_RESOURCES_PATH/${refinement_file_name}.py"
 
     eval $cmd -i "$refinement_file_path" -o "$refinement_script_path" -t refinement $redirect_output
-    timeout 10 python "$refinement_script_path"
+    python "$refinement_script_path"
 
 done
 

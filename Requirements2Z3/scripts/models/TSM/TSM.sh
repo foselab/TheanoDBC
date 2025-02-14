@@ -64,7 +64,7 @@ for current_version in "${versions[@]}"; do
     echo "$ota_file_content" >> "$refinement_file_path"
     echo "endtable" >> "$refinement_file_path"
 
-    echo -e "\nRunning refinement..."
+    echo -e "\nDoes ${current_version} refine ${system_name}?"
 
     refinement_script_path="$BASE_RESOURCES_PATH/${refinement_file_name}.py"
 
