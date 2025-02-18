@@ -1,6 +1,6 @@
 package requirements2Z3.rqt;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import requirements2Z3.visitors.RQTableVisitor;
@@ -10,7 +10,7 @@ public class Requirements {
 	private Set<Requirement> requirements;
 	
 	public Requirements() {
-		this.requirements=new HashSet<Requirement>();
+		this.requirements=new LinkedHashSet<Requirement>();
 	}
 	
 	public void add(Requirement r) {
