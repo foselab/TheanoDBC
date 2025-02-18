@@ -31,7 +31,7 @@ cleanup_files() {
     find "$BASE_RESOURCES_PATH" -type f -name "*.bak" -exec rm -f {} +
 }
 
-show_java_output=false
+show_java_output=true
 redirect_output=""
 if [ "$show_java_output" = false ]; then
     redirect_output="> /dev/null 2>&1"
@@ -42,7 +42,7 @@ fi
 # Model Name
 model_name="EUL"
 system_name="EUL_v1"
-versions=("EUL_v2")
+versions=("EUL_v2" "EUL_v3")
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement
