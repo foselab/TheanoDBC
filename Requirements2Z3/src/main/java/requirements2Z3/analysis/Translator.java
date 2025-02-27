@@ -133,7 +133,8 @@ public class Translator<T extends Table2Z3Visitor> {
 
 		// creates the Z3 solver
 		wt.write("# Defines the Z3 solver\n");
-		wt.write("solver = Solver()\n\n");
+		wt.write("solver = Solver()\n");
+		wt.write("solver.set(\"timeout\", 10000)\n\n");
 		
 		// Define the types I and R that are used to define variables
 		wt.write("# Define I and R\n");
@@ -149,11 +150,11 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write("# Utility function\n");
         wt.write("def print_counterexample(model):\n");
         wt.write("\tprint(\"-\" * 40)\n");
-        wt.write("\tprint(\"Variable\".ljust(20) + \"|\" + \" Value\")\n");
+        wt.write("\tprint(\"Counterexample\")\n");
         wt.write("\tprint(\"-\" * 40)\n");
         wt.write("\tfor v in model:\n");
         wt.write("\t\tif v.name() != \"tau\":\n");
-        wt.write("\t\t\tprint(str(v).ljust(20) + \"| \" + str(model[v]))\n");
+        wt.write("\t\t\tprint(str(v) + \" = \" + str(model[v]))\n");
         wt.write("\tprint(\"\")\n\n");
         
         // Function to evaluate conditions using a model
@@ -175,18 +176,22 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\tprint(f\"{name} = {condition_result}\")\n\n");
         wt.write("\treturn variable_values, condition_result\n\n");
         
-        // Prover
-        wt.write("# Function to prove conditions\n");
-        wt.write("def prove(condition, name, details=False):\n");
-        wt.write("\tsolver = Solver()\n");
-        wt.write("\tsolver.add(Not(condition))\n");
-        wt.write("\tif solver.check() == unsat: \n");
-        wt.write("\t\tprint(f\"{name} holds.\")\n");
-        wt.write("\telse:\n");
-        wt.write("\t\tprint(f\"{name} does not hold.\")\n");
-        wt.write("\t\tif(details):\n");
-        wt.write("\t\t\tmodel = solver.model()\n");
-        wt.write("\t\t\tprint_counterexample(model)\n\n");
+        // Contradictions check
+        wt.write("# Function to find contradictions\n");
+        wt.write("def contradictions(condition, name, details=False):\n");
+        wt.write("\tglobal solver\n");
+        wt.write("\tsolver.push()\n");
+        wt.write("\tsolver.add(condition)\n");
+        wt.write("\tres = solver.check()\n");
+        wt.write("\tif details:\n");
+        wt.write("\t\tif res == sat: \n");
+        wt.write("\t\t\tprint(f\"{name} has no contradictions.\")\n");
+        wt.write("\t\telif res == unsat:\n");
+        wt.write("\t\t\tprint(f\"{name} has contradictions.\")\n");
+        wt.write("\t\telse:\n");
+        wt.write("\t\t\tprint(f\"{name}: unknown.\")\n");
+        wt.write("\tsolver.pop()\n");
+        wt.write("\treturn res == unsat\n\n");
         
         // Missing assertions
         wt.write("# Function to find missing elements in a refinement condition\n");
@@ -209,9 +214,9 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\t\t\t\tbreak\n\n");
         wt.write("\t\t\t# Add missing terms to the target\n");
         wt.write("\t\t\tupdated_target = Or(updated_target, Or(*missing_terms))\n");
-        wt.write("\t\t\tprint(f\"Added {missing_terms} to {name}.\")\n");
+        wt.write("\t\t\tprint(f\"Missing this assertion or part of it: {missing_terms}.\")\n");
         wt.write("\t\telse:\n");
-        wt.write("\t\t\tprint(f\"{name} is now valid!\")\n");
+        //wt.write("\t\t\tprint(f\"{name} is now valid!\")\n");
         wt.write("\t\t\tbreak\n");
         wt.write("\t\tsolver.pop()\n\n");
         wt.write("\treturn updated_target\n\n");
@@ -221,51 +226,69 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("A1="+A1_str+"\n");
         wt.write("A2="+A2_str+"\n");
         wt.write("G1="+G1_str+"\n");
-        wt.write("G2="+G2_str+"\n");
-       
+        wt.write("G2="+G2_str+"\n\n");
+        
+        // Check if the conditions have contradictions
+        wt.write("# Check contradictions on requirements \n");
+        wt.write("print(\"Checking contradictions in the requirements...\")\n");
+        wt.write("A1_sat=contradictions(A1, \"A1\", False)\n");
+        wt.write("A2_sat=contradictions(A2, \"A2\", False)\n");
+        wt.write("G1_sat=contradictions(G1, \"G1\", False)\n");
+        wt.write("G2_sat=contradictions(G2, \"G2\", False)\n\n");
+        
+        // Useless testing refinement if the conditions have contradictions
+        wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
+        wt.write("\tprint(\"Fix the requirements before testing the refinement.\")\n");
+        wt.write("\texit()\n\n");
+        
+        wt.write("print(\"No contradictions found.\")\n");
+        
         // Refinement conditions
         wt.write("# Refinement conditions \n");
         wt.write("refinement_A=Implies(A1,A2)\n");
-        wt.write("refinement_G=Implies(G2,G1)\n");
-        wt.write("refinement_condition=And(refinement_A,refinement_G)\n\n");
-
+        wt.write("refinement_G=Implies(G2,G1)\n\n");
+        
         // Constraints
         wt.write("# Constraint \n");
         wt.write("solver.add(A1==True)\n\n");
         
-        wt.write("solver.push()\n\n");
-                
-        // Check refinement condition
-        wt.write("# Checking refinement condition \n");
-        wt.write("solver.add(Not(refinement_condition))\n");
-        wt.write("if solver.check() == unsat:\n");
-        wt.write("\tprint(f\"{NewRQTableName} refines {RQTableName} (compatible update).\")\n");
-        wt.write("else:\n");
-        wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
-        wt.write("\tmodel = solver.model()\n");
-        wt.write("\tprint_counterexample(model)\n");
-        wt.write("\tsolver.pop()\n\n");
-        
-        // Check single refinement conditions
+        // Check refinement condition on assumptions
+        wt.write("# Check refinement condition on assumptions\n");
         wt.write("solver.push()\n");
-        wt.write("if solver.check(Not(refinement_A)) == sat:\n");
-        wt.write("\tprint(\"Assumptions violated.\")\n");
+        wt.write("solver.add(Not(refinement_A))\n");
+        wt.write("res = solver.check()\n");
+        wt.write("if res == sat:\n");
+        wt.write("\tprint(f\"Assumptions violated.\")\n");
+        wt.write("\tmodel = solver.model()\n");
         wt.write("\tevaluate_condition(A1, model, \"A1\")\n");
         wt.write("\tevaluate_condition(A2, model, \"A2\")\n");
+        wt.write("\tprint_counterexample(model)\n");
         //wt.write("\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
-        wt.write("else:\n");
-        wt.write("\tprint(\"Assumptions hold.\")\n");
+        wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
+        wt.write("\texit()\n");
+        wt.write("else: \n");
+        wt.write("\tprint(f\"Assumptions holds.\") # the condition is always true\n");
         wt.write("solver.pop()\n\n");
-      
-        wt.write("solver.push()\n");        
-        wt.write("if solver.check(Not(refinement_G)) == sat:\n");
-        wt.write("\tprint(\"Guarantees violated.\")\n");    
+                
+        // Check refinement condition on guarantees
+        wt.write("# Check refinement condition on guarantees\n");
+        wt.write("solver.push()\n");
+        wt.write("solver.add(Not(refinement_G))\n");
+        wt.write("res = solver.check()\n");
+        wt.write("if res == sat:\n");
+        wt.write("\tprint(f\"Guarantees violated.\")\n");
+        wt.write("\tmodel = solver.model()\n");
         wt.write("\tevaluate_condition(G1, model, \"G1\")\n");
         wt.write("\tevaluate_condition(G2, model, \"G2\")\n");
-        wt.write("else:\n");
-        wt.write("\tprint(\"Guarantees hold.\")\n");
-        wt.write("solver.pop()\n");
+        wt.write("\tprint_counterexample(model)\n");
+        wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
+        wt.write("\texit()\n");
+        wt.write("else: \n");
+        wt.write("\tprint(f\"Guarantees holds.\") # the condition is always true\n");
+        wt.write("solver.pop()\n\n");
         
+        wt.write("print(f\"{NewRQTableName} refines {RQTableName} (compatible update).\")\n");
+
 		sc.close();
 		wt.close();
 	}
