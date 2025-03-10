@@ -19,6 +19,6 @@ reqdef
 	true, roll_command_acceleration <= 50.0;
 	true, pitch_command_acceleration <= 50.0;
 	true, yaw_command_acceleration <= 50.0;
-	true, airspeed_command_acceleration <= 33.0;
+	true, airspeed_command_acceleration <= 32.0;
 	true, height_command_acceleration <= 31.0;
 endreqdef
