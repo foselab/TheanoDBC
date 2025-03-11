@@ -134,7 +134,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		// creates the Z3 solver
 		wt.write("# Defines the Z3 solver\n");
 		wt.write("solver = Solver()\n");
-		wt.write("solver.set(\"timeout\", 10000)\n\n");
+		wt.write("solver.set(\"timeout\", 10000) # 10 sec\n\n");
 		
 		// Define the types I and R that are used to define variables
 		wt.write("# Define I and R\n");
@@ -238,10 +238,9 @@ public class Translator<T extends Table2Z3Visitor> {
         
         // Useless testing refinement if the conditions have contradictions
         wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
-        wt.write("\tprint(\"Fix the requirements before testing the refinement.\")\n");
-        wt.write("\texit()\n\n");
-        
-        wt.write("print(\"No contradictions found.\")\n");
+        wt.write("\tprint(\"Contradictions found. Fix the requirements before testing the refinement.\")\n");
+        wt.write("\texit()\n");
+        wt.write("print(\"Couldn't find contradictions.\")\n\n");
         
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -266,8 +265,10 @@ public class Translator<T extends Table2Z3Visitor> {
         //wt.write("\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
         wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
         wt.write("\texit()\n");
-        wt.write("else: \n");
+        wt.write("elif res == unsat: \n");
         wt.write("\tprint(f\"Assumptions holds.\") # the condition is always true\n");
+        wt.write("else:\n");
+        wt.write("\tprint(f\"Assumptions: unknown.\")\n");
         wt.write("solver.pop()\n\n");
                 
         // Check refinement condition on guarantees
@@ -283,8 +284,10 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("\tprint_counterexample(model)\n");
         wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
         wt.write("\texit()\n");
-        wt.write("else: \n");
+        wt.write("elif res == unsat: \n");
         wt.write("\tprint(f\"Guarantees holds.\") # the condition is always true\n");
+        wt.write("else:\n");
+        wt.write("\tprint(f\"Guarantees: unknown.\")\n");
         wt.write("solver.pop()\n\n");
         
         wt.write("print(f\"{NewRQTableName} refines {RQTableName} (compatible update).\")\n");
