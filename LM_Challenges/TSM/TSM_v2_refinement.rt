@@ -1,0 +1,58 @@
+table TSM_v1
+vardef
+    ia,Real,input;
+    ib,Real,input;
+    ic,Real,input;
+    T_Level,Real,input;
+    PC_Limit,Real,input;
+    PC,Real,output;
+    FC,Bool,output;
+    FC_1,Bool,output;
+    FC_2,Bool,output;
+    FC_4,Bool,output;
+    set_val,Real,output;
+    MVS,Real,output; 
+    GCA,Real,output;
+endvardef
+reqdef
+    (ib <= ia & ia <= ic) | (ic <= ia & ia <= ib), MVS == ia;
+    (ia <= ib & ib <= ic) | (ic <= ib & ib <= ia), MVS == ib;
+    (ia <= ic & ic <= ib) | (ib <= ic & ic <= ia), MVS == ic;
+    FC_1, GCA == (ib + ic) * 0.5;
+    FC_2, GCA == (ia + ic) * 0.5;
+    FC_4, GCA == (ia + ib) * 0.5;
+    FC_1 | FC_2 | FC_4, FC;
+    !FC & (ia-ib>T_Level | ia-ib>-T_Level | ia-ic>T_Level | ia-ic>-T_Level | ib-ic>T_Level | ib-ic>-T_Level) & PC>PC_Limit, FC;
+    !FC, set_val == MVS;
+    FC, set_val == GCA;
+endreqdef
+endtable
+table TSM_v2
+vardef
+    ia,Real,input;
+    ib,Real,input;
+    ic,Real,input;
+    T_Level,Real,input;
+    PC_Limit,Real,input;
+    PC,Real,output;
+    FC,Bool,output;
+    FC_1,Bool,output;
+    FC_2,Bool,output;
+    FC_4,Bool,output;
+    set_val,Real,output;
+    MVS,Real,output; 
+    GCA,Real,output;
+endvardef
+reqdef
+    (ib <= ia & ia <= ic) | (ic <= ia & ia <= ib), MVS == ia;
+    (ia <= ib & ib <= ic) | (ic <= ib & ib <= ia), MVS == ib;
+    (ia <= ic & ic <= ib) | (ib <= ic & ic <= ia), MVS == ic;
+    FC_1, GCA == (ib + ic) * 0.5;
+    FC_2, GCA == (ia + ic) * 0.5;
+    FC_4, GCA == (ia + ib) * 0.5;
+    FC_1 | FC_2 | FC_4, FC;
+    !FC & (ia-ib>T_Level | ia-ib>-T_Level | ia-ic>T_Level | ia-ic>-T_Level | ib-ic>T_Level | ib-ic>-T_Level), FC;
+    !FC, set_val == MVS;
+    FC, set_val == GCA;
+endreqdef
+endtable
