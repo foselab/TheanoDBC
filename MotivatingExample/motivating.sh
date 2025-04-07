@@ -17,7 +17,7 @@ fi
 
 # Paths
 BASE_RESOURCES_PATH="."
-CONTROLLED_VEHICLE_PATH="$BASE_RESOURCES_PATH/controlled_vehicle.rt"
+CONTROLLED_VEHICLE_PATH="$BASE_RESOURCES_PATH/controller.rt"
 
 # First refinement
 CC1_PATH="$BASE_RESOURCES_PATH/first/cc.rt"

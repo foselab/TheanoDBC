@@ -3,5 +3,5 @@ vardef
 	ac,Real,output;
 endvardef
 reqdef
-	t>-50, ac>0;
+	t>-40, ac>0;
 endreqdef

@@ -6,5 +6,5 @@ vardef
 	ac,Real,output;
 endvardef
 reqdef
-	((sp<st & t>-50.0) | !((th>=0.0 & ac>0.0))), (th>=0.0 & ac>0.0);
+	((sp<st & t>-70.0) | !((th>10.0 & ac>0.0))), (th>10.0 & ac>0.0);
 endreqdef

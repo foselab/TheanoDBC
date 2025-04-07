@@ -4,5 +4,5 @@ vardef
 	th,Real,output;
 endvardef
 reqdef
-	sp<st, th>=0;
+	sp<st, th>10;
 endreqdef

@@ -1,0 +1,18 @@
+table WE_v0
+vardef
+	t,Real,input;
+	ac,Real,output;
+endvardef
+reqdef
+	t>-50, ac>0;
+endreqdef
+endtable
+table WE_v1
+vardef
+	t,Real,input;
+	ac,Real,output;
+endvardef
+reqdef
+	t>-40, ac>0;
+endreqdef
+endtable

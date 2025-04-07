@@ -1,4 +1,4 @@
-table ControlledVehicle
+table Controller
 vardef
 	t,Real,input;
 	sp,Real,input;

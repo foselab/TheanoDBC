@@ -1,23 +1,21 @@
-table ControlledVehicle
+table SCC_v0
 vardef
-	t,Real,input;
+	ac,Real,input;
 	sp,Real,input;
 	st,Real,input;
 	th,Real,output;
 endvardef
 reqdef
-	t>-50 & sp<st, th>0;
+	ac>0 & sp<st, th>0;
 endreqdef
 endtable
-table Composition
+table SCC_v1
 vardef
 	sp,Real,input;
 	st,Real,input;
-	t,Real,input;
 	th,Real,output;
-	ac,Real,output;
 endvardef
 reqdef
-	((sp<st & t>-50.0) | !((th>10.0 & ac>0.0))), (th>10.0 & ac>0.0);
+	sp<st, th>10;
 endreqdef
 endtable
