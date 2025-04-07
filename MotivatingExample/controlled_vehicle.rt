@@ -1,0 +1,9 @@
+vardef
+	ac,Bool,input;
+	sp,Real,input;
+	st,Real,input;
+	sp,Real,output;
+endvardef
+reqdef
+	ac & sp<st, sp>0;
+endreqdef

@@ -1,0 +1,24 @@
+table ControlledVehicle
+vardef
+	ac,Bool,input;
+	sp,Real,input;
+	st,Real,input;
+	sp,Real,output;
+endvardef
+reqdef
+	ac & sp<st, sp>0;
+endreqdef
+endtable
+table Composition
+vardef
+	ac,Bool,input;
+	sp,Real,input;
+	st,Real,input;
+	th,Real,input;
+	th,Real,output;
+	sp,Real,output;
+endvardef
+reqdef
+	((sp<st & th>0.0) | !((th>10.0 & sp>5.0))), (th>10.0 & sp>5.0);
+endreqdef
+endtable
