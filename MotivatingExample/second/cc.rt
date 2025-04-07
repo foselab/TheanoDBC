@@ -1,5 +1,4 @@
 vardef
-	ac,Bool,input;
 	sp,Real,input;
 	st,Real,input;
 	th,Real,output;

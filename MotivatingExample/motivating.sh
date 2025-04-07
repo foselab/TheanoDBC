@@ -21,7 +21,7 @@ CONTROLLED_VEHICLE_PATH="$BASE_RESOURCES_PATH/controlled_vehicle.rt"
 
 # First refinement
 CC1_PATH="$BASE_RESOURCES_PATH/first/cc.rt"
-VE1_PATH="$BASE_RESOURCES_PATH/first/ve.rt"
+VE1_PATH="$BASE_RESOURCES_PATH/first/we.rt"
 CC1VE1_PATH="$BASE_RESOURCES_PATH/first/temp.rt"
 CC1VE1_COMPOSITION_PATH="$BASE_RESOURCES_PATH/first/composition.rt"
 REFINEMENT_FILE_PATH_1="$BASE_RESOURCES_PATH/first/refinement.rt"
@@ -63,7 +63,7 @@ timeout 10 python "$REFINEMENT_SCRIPT_PATH"
 
 # Second refinement
 CC2_PATH="$BASE_RESOURCES_PATH/second/cc.rt"
-VE2_PATH="$BASE_RESOURCES_PATH/second/ve.rt"
+VE2_PATH="$BASE_RESOURCES_PATH/second/we.rt"
 CC2VE2_PATH="$BASE_RESOURCES_PATH/second/temp.rt"
 CC2VE2_COMPOSITION_PATH="$BASE_RESOURCES_PATH/second/composition.rt"
 REFINEMENT_FILE_PATH_2="$BASE_RESOURCES_PATH/second/refinement.rt"

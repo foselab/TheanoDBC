@@ -1,9 +1,9 @@
 vardef
-	ac,Bool,input;
+	ac,Real,input;
 	sp,Real,input;
 	st,Real,input;
 	th,Real,output;
 endvardef
 reqdef
-	ac & sp<st, th>0;
+	ac>0 & sp<st, th>0;
 endreqdef

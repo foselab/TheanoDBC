@@ -1,11 +1,11 @@
 vardef
-	ac,Bool,input;
+	ac,Real,input;
 	sp,Real,input;
 	st,Real,input;
-	th,Real,input;
+	t,Real,input;
 	th,Real,output;
-	sp,Real,output;
+	ac,Real,output;
 endvardef
 reqdef
-	(((ac & sp<st) & th>0.0) | !((th>0.0 & sp>0.0))), (th>0.0 & sp>0.0);
+	(((ac>0.0 & sp<st) & t>-50.0) | !((th>0.0 & ac>0.0))), (th>0.0 & ac>0.0);
 endreqdef
