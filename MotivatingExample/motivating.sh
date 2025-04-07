@@ -103,6 +103,48 @@ echo -e "\nRunning refinement..."
 eval $cmd -i "$REFINEMENT_FILE_PATH_2" -o "$REFINEMENT_SCRIPT_PATH" -t refinement $redirect_output
 timeout 10 python "$REFINEMENT_SCRIPT_PATH"
 
+# Third refinement
+CC3_PATH="$BASE_RESOURCES_PATH/third/cc.rt"
+VE3_PATH="$BASE_RESOURCES_PATH/third/we.rt"
+CC3VE3_PATH="$BASE_RESOURCES_PATH/third/temp.rt"
+CC3VE3_COMPOSITION_PATH="$BASE_RESOURCES_PATH/third/composition.rt"
+REFINEMENT_FILE_PATH_3="$BASE_RESOURCES_PATH/third/refinement.rt"
+REFINEMENT_SCRIPT_PATH="$BASE_RESOURCES_PATH/third/script.py"
+
+{
+  echo "table CruiseController"
+  cat "$CC3_PATH"
+  echo -e "\nendtable"
+  echo "table Vehicle"
+  cat "$VE3_PATH"
+  echo -e "\nendtable"
+} > "$CC3VE3_PATH"
+
+echo -e "\nTHIRD CONFIGURATION"
+
+# Composition
+echo -e "\nRunning composition..."
+eval $cmd -i "$CC3VE3_PATH" -o "$CC3VE3_COMPOSITION_PATH." -e BeUfFs -t composition -b 6 -a
+
+rm -f $CC3VE3_PATH
+
+# Refinement
+composition_file_content=$(cat "$CC3VE3_COMPOSITION_PATH")
+system_table=$(cat "$CONTROLLED_VEHICLE_PATH")
+
+{
+    echo "table ControlledVehicle"
+    echo "$system_table"
+    echo "endtable"
+    echo "table Composition"
+    echo "$composition_file_content"
+    echo "endtable"
+} > "$REFINEMENT_FILE_PATH_3"
+
+echo -e "\nRunning refinement..."
+eval $cmd -i "$REFINEMENT_FILE_PATH_3" -o "$REFINEMENT_SCRIPT_PATH" -t refinement $redirect_output
+timeout 10 python "$REFINEMENT_SCRIPT_PATH"
+
 # End script cleaning up
 cleanup_files
 echo -e "\nDone"

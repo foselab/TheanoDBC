@@ -1,0 +1,8 @@
+vardef
+	sp,Real,input;
+	st,Real,input;
+	th,Real,output;
+endvardef
+reqdef
+	sp<st, th>=0;
+endreqdef
