@@ -3,28 +3,22 @@ vardef
     ia,Real,input;
     ib,Real,input;
     ic,Real,input;
-    T_Level,Real,input;
-    PC_Limit,Real,input;
-    PC,Real,output;
-    FC,Bool,output;
-    FC_1,Bool,output;
-    FC_2,Bool,output;
-    FC_4,Bool,output;
-    set_val,Real,output;
-    MVS,Real,output; 
-    GCA,Real,output;
+    pre_no_fail,Bool,input;
+    failure_must_be_latched,Bool,input;
+    no_fail,Bool,input;
+    FC_1,Bool,input;
+    FC_2,Bool,input;
+    FC_4,Bool,input;
+    set_val,Real,input;
+    single_fail_reported,Bool,output;   
+    mid_value,Real,output;
 endvardef
 reqdef
-    (ib <= ia & ia <= ic) | (ic <= ia & ia <= ib), MVS == ia;
-    (ia <= ib & ib <= ic) | (ic <= ib & ib <= ia), MVS == ib;
-    (ia <= ic & ic <= ib) | (ib <= ic & ic <= ia), MVS == ic;
-    FC_1, GCA == (ib + ic) * 0.5;
-    FC_2, GCA == (ia + ic) * 0.5;
-    FC_4, GCA == (ia + ib) * 0.5;
-    FC_1 | FC_2 | FC_4, FC;
-    !FC & (ia-ib>T_Level | ia-ib>-T_Level | ia-ic>T_Level | ia-ic>-T_Level | ib-ic>T_Level | ib-ic>-T_Level) & PC>PC_Limit, FC;
-    !FC, set_val == MVS;
-    FC, set_val == GCA;
+    (pre_no_fail & failure_must_be_latched), single_fail_reported;  
+    no_fail, set_val == mid_value;
+    FC_1, set_val == ((ia + ib) * 0.5);
+    FC_2, set_val == ((ia + ic) * 0.5);
+    FC_4, set_val == ((ib + ic) * 0.5);
 endreqdef
 endtable
 table TSM_v2
@@ -32,27 +26,21 @@ vardef
     ia,Real,input;
     ib,Real,input;
     ic,Real,input;
-    T_Level,Real,input;
-    PC_Limit,Real,input;
-    PC,Real,output;
-    FC,Bool,output;
-    FC_1,Bool,output;
-    FC_2,Bool,output;
-    FC_4,Bool,output;
-    set_val,Real,output;
-    MVS,Real,output; 
-    GCA,Real,output;
+    pre_no_fail,Bool,input;
+    failure_must_be_latched,Bool,input;
+    no_fail,Bool,input;
+    FC_1,Bool,input;
+    FC_2,Bool,input;
+    FC_4,Bool,input;
+    set_val,Real,input; 
+    single_fail_reported,Bool,output;   
+    mid_value,Real,output;
 endvardef
 reqdef
-    (ib <= ia & ia <= ic) | (ic <= ia & ia <= ib), MVS == ia;
-    (ia <= ib & ib <= ic) | (ic <= ib & ib <= ia), MVS == ib;
-    (ia <= ic & ic <= ib) | (ib <= ic & ic <= ia), MVS == ic;
-    FC_1, GCA == (ib + ic) * 0.5;
-    FC_2, GCA == (ia + ic) * 0.5;
-    FC_4, GCA == (ia + ib) * 0.5;
-    FC_1 | FC_2 | FC_4, FC;
-    !FC & (ia-ib>T_Level | ia-ib>-T_Level | ia-ic>T_Level | ia-ic>-T_Level | ib-ic>T_Level | ib-ic>-T_Level), FC;
-    !FC, set_val == MVS;
-    FC, set_val == GCA;
+    (failure_must_be_latched), single_fail_reported;  
+    no_fail, set_val == mid_value;
+    FC_1, set_val == ((ia + ib) * 0.5);
+    FC_2, set_val == ((ia + ic) * 0.5);
+    FC_4, set_val == ((ib + ic) * 0.5);
 endreqdef
 endtable

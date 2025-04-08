@@ -16,16 +16,15 @@ R = RealSort()
 ia=Array('ia',I,R)
 ib=Array('ib',I,R)
 ic=Array('ic',I,R)
-T_Level=Array('T_Level',I,R)
-PC_Limit=Array('PC_Limit',I,R)
-PC=Array('PC',I,R)
-FC=Bool('FC')
+pre_no_fail=Bool('pre_no_fail')
+failure_must_be_latched=Bool('failure_must_be_latched')
+no_fail=Bool('no_fail')
 FC_1=Bool('FC_1')
 FC_2=Bool('FC_2')
 FC_4=Bool('FC_4')
 set_val=Array('set_val',I,R)
-MVS=Array('MVS',I,R)
-GCA=Array('GCA',I,R)
+single_fail_reported=Bool('single_fail_reported')
+mid_value=Array('mid_value',I,R)
 
 # Utility function
 def print_counterexample(model):
@@ -103,10 +102,10 @@ def fix_refinement_condition(source, target, name):
 	return updated_target
 
 # Contracts
-A1=Or(And(ib[0]<=ia[0],ia[0]<=ic[0]),And(ic[0]<=ia[0],ia[0]<=ib[0]),Or(And(ia[0]<=ib[0],ib[0]<=ic[0]),And(ic[0]<=ib[0],ib[0]<=ia[0])),Or(And(ia[0]<=ic[0],ic[0]<=ib[0]),And(ib[0]<=ic[0],ic[0]<=ia[0])),FC_1,FC_2,FC_4,Or(FC_1,FC_2,FC_4),And(Not(FC),Or(ia[0]-ib[0]>T_Level[0],ia[0]-ib[0]>(-T_Level[0]),ia[0]-ic[0]>T_Level[0],ia[0]-ic[0]>(-T_Level[0]),ib[0]-ic[0]>T_Level[0],ib[0]-ic[0]>(-T_Level[0])),PC[0]>PC_Limit[0]),Not(FC),FC)
-A2=Or(And(ib[0]<=ia[0],ia[0]<=ic[0]),And(ic[0]<=ia[0],ia[0]<=ib[0]),Or(And(ia[0]<=ib[0],ib[0]<=ic[0]),And(ic[0]<=ib[0],ib[0]<=ia[0])),Or(And(ia[0]<=ic[0],ic[0]<=ib[0]),And(ib[0]<=ic[0],ic[0]<=ia[0])),FC_1,FC_2,FC_4,Or(FC_1,FC_2,FC_4),And(Not(FC),Or(ia[0]-ib[0]>T_Level[0],ia[0]-ib[0]>(-T_Level[0]),ia[0]-ic[0]>T_Level[0],ia[0]-ic[0]>(-T_Level[0]),ib[0]-ic[0]>T_Level[0],ib[0]-ic[0]>(-T_Level[0]))),Not(FC),FC)
-G1=And(Implies(Or(And(ib[0]<=ia[0],ia[0]<=ic[0]),And(ic[0]<=ia[0],ia[0]<=ib[0])),MVS[0]==ia[0]),Implies(Or(And(ia[0]<=ib[0],ib[0]<=ic[0]),And(ic[0]<=ib[0],ib[0]<=ia[0])),MVS[0]==ib[0]),Implies(Or(And(ia[0]<=ic[0],ic[0]<=ib[0]),And(ib[0]<=ic[0],ic[0]<=ia[0])),MVS[0]==ic[0]),Implies(FC_1,GCA[0]==ib[0]+ic[0]*0.5),Implies(FC_2,GCA[0]==ia[0]+ic[0]*0.5),Implies(FC_4,GCA[0]==ia[0]+ib[0]*0.5),Implies(Or(FC_1,FC_2,FC_4),FC),Implies(And(Not(FC),Or(ia[0]-ib[0]>T_Level[0],ia[0]-ib[0]>(-T_Level[0]),ia[0]-ic[0]>T_Level[0],ia[0]-ic[0]>(-T_Level[0]),ib[0]-ic[0]>T_Level[0],ib[0]-ic[0]>(-T_Level[0])),PC[0]>PC_Limit[0]),FC),Implies(Not(FC),set_val[0]==MVS[0]),Implies(FC,set_val[0]==GCA[0]))
-G2=And(Implies(Or(And(ib[0]<=ia[0],ia[0]<=ic[0]),And(ic[0]<=ia[0],ia[0]<=ib[0])),MVS[0]==ia[0]),Implies(Or(And(ia[0]<=ib[0],ib[0]<=ic[0]),And(ic[0]<=ib[0],ib[0]<=ia[0])),MVS[0]==ib[0]),Implies(Or(And(ia[0]<=ic[0],ic[0]<=ib[0]),And(ib[0]<=ic[0],ic[0]<=ia[0])),MVS[0]==ic[0]),Implies(FC_1,GCA[0]==ib[0]+ic[0]*0.5),Implies(FC_2,GCA[0]==ia[0]+ic[0]*0.5),Implies(FC_4,GCA[0]==ia[0]+ib[0]*0.5),Implies(Or(FC_1,FC_2,FC_4),FC),Implies(And(Not(FC),Or(ia[0]-ib[0]>T_Level[0],ia[0]-ib[0]>(-T_Level[0]),ia[0]-ic[0]>T_Level[0],ia[0]-ic[0]>(-T_Level[0]),ib[0]-ic[0]>T_Level[0],ib[0]-ic[0]>(-T_Level[0]))),FC),Implies(Not(FC),set_val[0]==MVS[0]),Implies(FC,set_val[0]==GCA[0]))
+A1=Or(And(pre_no_fail,failure_must_be_latched),no_fail,FC_1,FC_2,FC_4)
+A2=Or(failure_must_be_latched,no_fail,FC_1,FC_2,FC_4)
+G1=And(Implies(And(pre_no_fail,failure_must_be_latched),single_fail_reported),Implies(no_fail,set_val[0]==mid_value[0]),Implies(FC_1,set_val[0]==ia[0]+ib[0]*0.5),Implies(FC_2,set_val[0]==ia[0]+ic[0]*0.5),Implies(FC_4,set_val[0]==ib[0]+ic[0]*0.5))
+G2=And(Implies(failure_must_be_latched,single_fail_reported),Implies(no_fail,set_val[0]==mid_value[0]),Implies(FC_1,set_val[0]==ia[0]+ib[0]*0.5),Implies(FC_2,set_val[0]==ia[0]+ic[0]*0.5),Implies(FC_4,set_val[0]==ib[0]+ic[0]*0.5))
 
 # Check contradictions on requirements 
 print("Checking contradictions in the requirements...")
