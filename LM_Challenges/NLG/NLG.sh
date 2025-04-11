@@ -21,7 +21,7 @@ fi
 # Model Name
 model_name="NLG"
 system_name="NLG_v1"
-versions=("NLG_v2")
+versions=("NLG_v2" "NLG_v3")
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement

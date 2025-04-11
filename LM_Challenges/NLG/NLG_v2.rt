@@ -23,12 +23,9 @@ vardef
     Xap2_2,Real,output;
 endvardef
 reqdef
-    true, (Vv_0*yout_0 + Vv_1*yout_1 + Vv_2*yout_2) >0 & (yout_0*Xr_0 + yout_1*Xr_1 + yout_2*Xr_2) >0;
+    true, (Vv_0*yout_0 + Vv_1*yout_1 + Vv_2*yout_2) >0 & (yout_0*Xr_0 + yout_1*Xr_1 + yout_2*Xr_2) >=0;
     (yout_0 == Xap1_0) & (yout_1 == Xap1_1) & (yout_2 == Xap1_2), ((yout_0 - Xtarg_0) * (yout_0 - Xtarg_0) + (yout_1 - Xtarg_1) * (yout_1 - Xtarg_1) + (yout_2 - Xtarg_2) * (yout_2 - Xtarg_2)) >= r*r & ((yout_0 - Xtarg_0) * (yout_0 - Xv_0) + (yout_1 - Xtarg_1) * (yout_1 - Xv_1) + (yout_2 - Xtarg_2) * (yout_2 - Xv_2)) == 0;
     (yout_0 == Xap2_0) & (yout_1 == Xap2_1) & (yout_2 == Xap2_2), ((yout_0 - Xtarg_0) * (yout_0 - Xtarg_0) + (yout_1 - Xtarg_1) * (yout_1 - Xtarg_1) + (yout_2 - Xtarg_2) * (yout_2 - Xtarg_2)) >= r*r & ((yout_0 - Xtarg_0) * (yout_0 - Xv_0) + (yout_1 - Xtarg_1) * (yout_1 - Xv_1) + (yout_2 - Xtarg_2) * (yout_2 - Xv_2)) == 0;
     true, ((yout_0 == Xap1_0) & (yout_1 == Xap1_1) & (yout_2 == Xap1_2)) or (yout_0 == Xap2_0) & (yout_1 == Xap2_1) & (yout_2 == Xap2_2);
-    ((Xap1_0 - Xv_0) * (Xap1_0 - Xv_0) + (Xap1_1 - Xv_1) * (Xap1_1 - Xv_1) + (Xap1_2 - Xv_2) * (Xap1_2 - Xv_2)) < ((Xap2_0 - Xv_0) * (Xap2_0 - Xv_0) + (Xap2_1 - Xv_1) * (Xap2_1 - Xv_1) + (Xap2_2 - Xv_2) * (Xap2_2 - Xv_2)), (yout_0 == Xap1_0) & (yout_1 == Xap1_1) & (yout_2 == Xap1_2);
-    ((Xr_0 * Xr_0) + (Xr_1 * Xr_1) + (Xr_2 * Xr_2)) < (r*r) & ((Xap1_0 - Xv_0) * (Xap1_0 - Xv_0) + (Xap1_1 - Xv_1) * (Xap1_1 - Xv_1) + (Xap1_2 - Xv_2) * (Xap1_2 - Xv_2)) >= ((Xap2_0 - Xv_0) * (Xap2_0 - Xv_0) + (Xap2_1 - Xv_1) * (Xap2_1 - Xv_1) + (Xap2_2 - Xv_2) * (Xap2_2 - Xv_2)), (yout_0 == Xap2_0) & (yout_1 == Xap2_1) & (yout_2 == Xap2_2);
     true, yout_2 == Xtarg_2;
 endreqdef
-
