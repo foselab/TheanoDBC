@@ -19,9 +19,9 @@ if [ "$show_java_output" = false ]; then
 fi
 
 # Model Name
-model_name="AP"
-system_name="AP_v1"
-versions=("AP_v2" "AP_v3")
+model_name="RAP"
+system_name="RAP_v1"
+versions=("RAP_v2" RAP_v3)
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement
