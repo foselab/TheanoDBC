@@ -13,7 +13,7 @@ vardef
     mid_value,Real,output;
 endvardef
 reqdef
-    pre_no_fail & failure_must_be_latched, single_fail_reported;  
+    failure_must_be_latched, single_fail_reported;  
     no_fail, set_val == mid_value;
     FC_1, set_val == (ia + ib) * 0.5;
     FC_2, set_val == (ia + ic) * 0.5;

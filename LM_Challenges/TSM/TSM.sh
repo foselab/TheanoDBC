@@ -21,7 +21,7 @@ fi
 # Model Name
 model_name="TSM"
 system_name="TSM_v1"
-versions=("TSM_v2")
+versions=("TSM_v2" "TSM_v3")
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement
