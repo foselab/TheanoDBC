@@ -43,7 +43,6 @@ reqdef
 	true, c1xc1Transpose & c2xc2Transpose & c3xc3Transpose;
 	true, c1xc2Transpose & c1xc3Transpose & c2xc3Transpose;
 	true, r1xr1Transpose & r1xr2Transpose & r1xr3Transpose & r2xr1Transpose & r2xr2Transpose & r2xr3Transpose & r3xr1Transpose & r3xr2Transpose & r3xr3Transpose;
-	true, DCM_det == 1.0;
 	DCM321_1_1 * DCM321_1_1 + DCM321_1_2 * DCM321_1_2 + DCM321_1_3 * DCM321_1_3 == 1.0, r1xr1Transpose;
 	DCM321_1_1 * DCM321_1_1 + DCM321_1_2 * DCM321_1_2 + DCM321_1_3 * DCM321_1_3 != 1.0, !r1xr1Transpose;
 	DCM321_2_1 * DCM321_2_1 + DCM321_2_2 * DCM321_2_2 + DCM321_2_3 * DCM321_2_3 == 1.0, r2xr2Transpose;
@@ -74,4 +73,5 @@ reqdef
 	DCM321_3_1 * DCM321_1_1 + DCM321_3_2 * DCM321_1_2 + DCM321_3_3 * DCM321_1_3 != 0.0, !r3xr1Transpose;
 	DCM321_3_1 * DCM321_2_1 + DCM321_3_2 * DCM321_2_2 + DCM321_3_3 * DCM321_2_3 == 0.0, r3xr2Transpose;
 	DCM321_3_1 * DCM321_2_1 + DCM321_3_2 * DCM321_2_2 + DCM321_3_3 * DCM321_2_3 != 0.0, !r3xr2Transpose;
+	true, DCM_det == 1.0;
 endreqdef
