@@ -1,31 +1,21 @@
 vardef
-    Xtarg_0,Real,input;
-    Xtarg_1,Real,input;
-    Xtarg_2,Real,input;
-    Xv_0,Real,input;
-    Xv_1,Real,input;
-    Xv_2,Real,input;
-    Vv_0,Real,input;
-    Vv_1,Real,input;
-    Vv_2,Real,input;
-    r,Real,input;
-    Xr_0,Real,input;
-    Xr_1,Real,input;
-    Xr_2,Real,input;
-    yout_0,Real,output;
-    yout_1,Real,output;
-    yout_2,Real,output;
-    Xap1_0,Real,output;
-    Xap1_1,Real,output;
-    Xap1_2,Real,output;
-    Xap2_0,Real,output;
-    Xap2_1,Real,output;
-    Xap2_2,Real,output;
+	Vv_0,Real,input;
+  Vv_1,Real,input;
+  Vv_2,Real,input;
+  Xtarg_0,Real,input;
+  Xtarg_1,Real,input;
+  Xtarg_2,Real,input;
+  Xv_0,Real,input;
+  Xv_1,Real,input;
+  Xv_2,Real,input;
+  r,Real,input;
+  yout_0,Real,output;
+  yout_1,Real,output;
+  yout_2,Real,output;
 endvardef
 reqdef
-    true, (Vv_0*yout_0 + Vv_1*yout_1 + Vv_2*yout_2) >0 & (yout_0*Xr_0 + yout_1*Xr_1 + yout_2*Xr_2) >1;
-    (yout_0 == Xap1_0) & (yout_1 == Xap1_1) & (yout_2 == Xap1_2), ((yout_0 - Xtarg_0) * (yout_0 - Xtarg_0) + (yout_1 - Xtarg_1) * (yout_1 - Xtarg_1) + (yout_2 - Xtarg_2) * (yout_2 - Xtarg_2)) >= r*r & ((yout_0 - Xtarg_0) * (yout_0 - Xv_0) + (yout_1 - Xtarg_1) * (yout_1 - Xv_1) + (yout_2 - Xtarg_2) * (yout_2 - Xv_2)) == 0;
-    (yout_0 == Xap2_0) & (yout_1 == Xap2_1) & (yout_2 == Xap2_2), ((yout_0 - Xtarg_0) * (yout_0 - Xtarg_0) + (yout_1 - Xtarg_1) * (yout_1 - Xtarg_1) + (yout_2 - Xtarg_2) * (yout_2 - Xtarg_2)) >= r*r & ((yout_0 - Xtarg_0) * (yout_0 - Xv_0) + (yout_1 - Xtarg_1) * (yout_1 - Xv_1) + (yout_2 - Xtarg_2) * (yout_2 - Xv_2)) == 0;
-    true, ((yout_0 == Xap1_0) & (yout_1 == Xap1_1) & (yout_2 == Xap1_2)) or (yout_0 == Xap2_0) & (yout_1 == Xap2_1) & (yout_2 == Xap2_2);
-    true, yout_2 == Xtarg_2;
+	true, Vv_0*yout_0 + Vv_1*yout_1 + Vv_2*yout_2>0;
+	true, ((yout_0-Xtarg_0)*(yout_0-Xtarg_0)+(yout_1-Xtarg_1)*(yout_1-Xtarg_1)+(yout_2-Xtarg_2)*(yout_2-Xtarg_2)) > r & ((yout_0-Xtarg_0)*(yout_0-Xv_0)+(yout_1-Xtarg_1)*(yout_1-Xv_1)+(yout_2-Xtarg_2)*(yout_2-Xv_2)) == 0;
+	true, (yout_0*(Xtarg_0-Xv_0)+yout_1*(Xtarg_1-Xv_1)+yout_2*(Xtarg_2-Xv_2))>0;
+	true, yout_2==Xtarg_2;
 endreqdef
