@@ -21,7 +21,7 @@ fi
 # Model Name
 model_name="SWIM"
 system_name="SWIM_v1"
-versions=("SWIM_v2" "SWIM_v3" "SWIM_v4")
+versions=("SWIM_v2" "SWIM_v3")
 
 for current_version in "${versions[@]}"; do    
     refinement_file_name=${current_version}_refinement
