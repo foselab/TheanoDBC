@@ -1,6 +1,6 @@
 % Read data from files
-E1 = readmatrix('Efficiency\results\safe.txt');
-E2 = readmatrix('Efficiency\results\unsafe.txt');
+E1 = readmatrix('.\results\safe.txt');
+E2 = readmatrix('.\results\unsafe.txt');
 
 % Exclude EUL
 E1 = E1(1:450, :);

@@ -33,3 +33,4 @@ Requirements2Z3/scripts/models/**/*.py
 LM_Challenges/**/*_refinement.rt
 LM_Challenges/**/*_composition.rt
 LM_Challenges/**/*.py
+EvaluationDBC/results/*.png
