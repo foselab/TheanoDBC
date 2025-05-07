@@ -27,7 +27,6 @@ for current_version in "${versions[@]}"; do
     refinement_file_name=${current_version}_refinement
 
     # Files path
-    model_file_path="$BASE_RESOURCES_PATH/${current_version}.rt"
     ota_file_path="$BASE_RESOURCES_PATH/${current_version}.rt"
 
     # Refinement
