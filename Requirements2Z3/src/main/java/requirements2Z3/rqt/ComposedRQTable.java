@@ -51,7 +51,7 @@ public class ComposedRQTable extends RQTable {
 	private void contractsSelection(boolean all) {
 		
 		// every contracts will be selected for composition
-		if(all) {
+		if(all | this.contracts.size()==2) {
 			this.chosenContracts = this.contracts;
 			return;
 		}
