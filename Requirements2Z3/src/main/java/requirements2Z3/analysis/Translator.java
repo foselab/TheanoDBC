@@ -161,7 +161,7 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("# Function to evaluate conditions using a model\n");
         wt.write("def evaluate_condition(condition, model, name):\n");
         wt.write("\t# Dynamically extract variable-value pairs from the model, excluding 'tau'\n");
-        wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name() != 'tau'}\n");
+        wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name() != 'tau' and d.name()[0].isalnum()}\n");
         // wt.write("\tprint(\"Variable values:\", variable_values)\n\n");
         wt.write("\t# Substitute values dynamically\n");
         wt.write("\tsubstituted_condition = substitute(\n");
