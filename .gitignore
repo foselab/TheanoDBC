@@ -34,3 +34,4 @@ LM_Challenges/**/*_refinement.rt
 LM_Challenges/**/*_composition.rt
 LM_Challenges/**/*.py
 EvaluationDBC/results/*.png
+target/*
