@@ -161,7 +161,7 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("# Function to evaluate conditions using a model\n");
         wt.write("def evaluate_condition(condition, model, name):\n");
         wt.write("\t# Dynamically extract variable-value pairs from the model, excluding 'tau'\n");
-        wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name() != 'tau' and d.name()[0].isalnum()}\n");
+        wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name()!='tau' and d.name()!='div0' and d.name()!='mod0' and d.name()[0].isalnum()}\n");
         // wt.write("\tprint(\"Variable values:\", variable_values)\n\n");
         wt.write("\t# Substitute values dynamically\n");
         wt.write("\tsubstituted_condition = substitute(\n");
@@ -230,7 +230,7 @@ public class Translator<T extends Table2Z3Visitor> {
         
         // Check if the conditions have contradictions
         wt.write("# Check contradictions on requirements \n");
-        wt.write("print(\"Checking contradictions in the requirements...\")\n");
+        //wt.write("print(\"Checking contradictions in the requirements...\")\n");
         wt.write("A1_sat=contradictions(A1, \"A1\", False)\n");
         wt.write("A2_sat=contradictions(A2, \"A2\", False)\n");
         wt.write("G1_sat=contradictions(G1, \"G1\", False)\n");
@@ -238,9 +238,9 @@ public class Translator<T extends Table2Z3Visitor> {
         
         // Useless testing refinement if the conditions have contradictions
         wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
-        wt.write("\tprint(\"Contradictions found. Fix the requirements before testing the refinement.\")\n");
+        wt.write("\tprint(\"contradictions\")\n");
         wt.write("\texit()\n");
-        wt.write("print(\"Couldn't find contradictions.\")\n\n");
+        //wt.write("print(\"Couldn't find contradictions.\")\n\n");
         
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -257,18 +257,20 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("solver.add(Not(refinement_A))\n");
         wt.write("res = solver.check()\n");
         wt.write("if res == sat:\n");
-        wt.write("\tprint(f\"Assumptions violated.\")\n");
-        wt.write("\tmodel = solver.model()\n");
-        wt.write("\tevaluate_condition(A1, model, \"A1\")\n");
-        wt.write("\tevaluate_condition(A2, model, \"A2\")\n");
-        wt.write("\tprint_counterexample(model)\n");
+        //wt.write("\tprint(f\"Assumptions violated.\")\n");
+        //wt.write("\tmodel = solver.model()\n");
+        //wt.write("\tevaluate_condition(A1, model, \"A1\")\n");
+        //wt.write("\tevaluate_condition(A2, model, \"A2\")\n");
+        //wt.write("\tprint_counterexample(model)\n");
         //wt.write("\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
-        wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
+        wt.write("\tprint(f\"no\")\n");
         wt.write("\texit()\n");
-        wt.write("elif res == unsat: \n");
-        wt.write("\tprint(f\"Assumptions holds.\") # the condition is always true\n");
-        wt.write("else:\n");
-        wt.write("\tprint(f\"Assumptions: unknown.\")\n");
+        wt.write("elif res == unknown: \n");
+        wt.write("\tprint(f\"unknown\")\n");
+        wt.write("\texit()\n");
+
+        //wt.write("else:\n");
+        //wt.write("\tprint(f\"Assumptions: unknown.\")\n");
         wt.write("solver.pop()\n\n");
                 
         // Check refinement condition on guarantees
@@ -277,20 +279,20 @@ public class Translator<T extends Table2Z3Visitor> {
         wt.write("solver.add(Not(refinement_G))\n");
         wt.write("res = solver.check()\n");
         wt.write("if res == sat:\n");
-        wt.write("\tprint(f\"Guarantees violated.\")\n");
-        wt.write("\tmodel = solver.model()\n");
-        wt.write("\tevaluate_condition(G1, model, \"G1\")\n");
-        wt.write("\tevaluate_condition(G2, model, \"G2\")\n");
-        wt.write("\tprint_counterexample(model)\n");
-        wt.write("\tprint(f\"{NewRQTableName} does NOT refine {RQTableName} (update NOT recommended).\")\n");
+        //wt.write("\tprint(f\"Guarantees violated.\")\n");
+        //wt.write("\tmodel = solver.model()\n");
+        //wt.write("\tevaluate_condition(G1, model, \"G1\")\n");
+        //wt.write("\tevaluate_condition(G2, model, \"G2\")\n");
+        //wt.write("\tprint_counterexample(model)\n");
+        wt.write("\tprint(f\"no\")\n");
         wt.write("\texit()\n");
-        wt.write("elif res == unsat: \n");
-        wt.write("\tprint(f\"Guarantees holds.\") # the condition is always true\n");
-        wt.write("else:\n");
-        wt.write("\tprint(f\"Guarantees: unknown.\")\n");
+        wt.write("elif res == unknown: \n");
+        wt.write("\tprint(f\"unknown\") # the condition is always true\n");
+        //wt.write("else:\n");
+        //wt.write("\tprint(f\"Guarantees: unknown.\")\n");
         wt.write("solver.pop()\n\n");
         
-        wt.write("print(f\"{NewRQTableName} refines {RQTableName} (compatible update).\")\n");
+        wt.write("print(f\"yes\")\n");
 
 		sc.close();
 		wt.close();
