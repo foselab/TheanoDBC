@@ -1,14 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Detect OS and set Python command
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OS" == "Windows_NT" ]]; then
+    PYTHON_CMD="py -3"
+    FIND_EXEC="find"
+else
+    PYTHON_CMD="python3"
+    FIND_EXEC="find"
+fi
 
 # Command
-cmd="java -jar ../Theano.jar"
+cmd=(java -jar ../Theano.jar)
 BASE_RESOURCES_PATH="."
 
 show_java_output=false
-redirect_output=""
-if [ "$show_java_output" = false ]; then
-    redirect_output="> /dev/null 2>&1"
-fi
 
 # Paths
 CONTROLLED_VEHICLE_PATH="$BASE_RESOURCES_PATH/../controller.rt"
@@ -23,15 +28,17 @@ REFINEMENT_SCRIPT_PATH="script.py"
 {
   echo "table SCC_v0"
   cat "$SCC_PATH"
-  echo -e "\nendtable"
+  echo
+  echo "endtable"
   echo "table WE_v0"
   cat "$WE_PATH"
-  echo -e "\nendtable"
+  echo
+  echo "endtable"
 } > "$SCC_WE_PATH"
 
 # Composition
-echo -e "\nRunning composition..."
-eval $cmd -i "$SCC_WE_PATH" -o "$SCC_WE_COMPOSITION." -e BeUfFs -t composition -b 6 -a
+echo "Running composition..."
+"${cmd[@]}" -i "$SCC_WE_PATH" -o "$SCC_WE_COMPOSITION" -e BeUfFs -t composition -b 6 -a
 
 rm -f $SCC_WE_PATH
 
@@ -50,15 +57,22 @@ OLD="Controller"
     echo "endtable"
 } > "$REFINEMENT_FILE_PATH"
 
-echo -e "\nChecking if $NEW refines $OLD..."
-eval $cmd -i "$REFINEMENT_FILE_PATH" -o "$REFINEMENT_SCRIPT_PATH" -t refinement $redirect_output
-timeout 10 python "$REFINEMENT_SCRIPT_PATH"
+# Refinement check
+echo "Checking if $NEW refines $OLD..."
+if [ "$show_java_output" = false ] ; then
+    "${cmd[@]}" -i "$REFINEMENT_FILE_PATH" -o "$REFINEMENT_SCRIPT_PATH" -t refinement > /dev/null 2>&1
+else
+    "${cmd[@]}" -i "$REFINEMENT_FILE_PATH" -o "$REFINEMENT_SCRIPT_PATH" -t refinement
+fi
 
-# End script cleaning up
+# Run Python script
+$PYTHON_CMD "$REFINEMENT_SCRIPT_PATH"
+
+# Cleanup
 cleanup_files() {
-    find "$BASE_RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} +
-    find "$BASE_RESOURCES_PATH" -type f -name "*.bak" -exec rm -f {} +
+    $FIND_EXEC "$BASE_RESOURCES_PATH" -type f -name "*.py" -exec rm -f {} \;
+    $FIND_EXEC "$BASE_RESOURCES_PATH" -type f -name "*.bak" -exec rm -f {} \;
 }
 
 cleanup_files
-echo -e "\nDone"
+echo "Done"
