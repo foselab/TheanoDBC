@@ -1,0 +1,21 @@
+table scc_v0
+    vardef
+        ac,Real,input;
+        sp,Real,input;
+        st,Real,input;
+        th,Real,output;
+    endvardef
+    reqdef
+        ac>0 & sp<st, th>0;
+    endreqdef
+endtable
+
+table ve_v0
+    vardef
+        th,Real,input;
+        sp,Real,output;
+    endvardef
+    reqdef
+        th>0, sp>0;
+    endreqdef
+endtable
