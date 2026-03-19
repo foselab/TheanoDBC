@@ -65,7 +65,7 @@ public class Main {
 		// output file can be a .rt file (composition) or a python file
         options.addOption(Option.builder("o").longOpt("outputFile").desc("output file path").hasArg().required().build());
         
-        options.addOption(Option.builder("t").longOpt("type").desc("consistency | completeness | composition | refinement").hasArg().required().build());
+        options.addOption(Option.builder("t").longOpt("type").desc("consistency | completeness | composition | refinement | smtlib").hasArg().required().build());
         options.addOption(Option.builder("e").longOpt("encoding").desc("encoding one among BeArFs | BeArVs | BeUfFs | BeUfVs | UeArFs | UeArVs | UeUfFs | UeUfVs").hasArg().build());
         options.addOption(Option.builder("b").longOpt("bound").desc("the bound").hasArg().build());
         options.addOption(Option.builder("a").longOpt("all").desc("compose all tables").hasArg(false).build());
@@ -126,6 +126,13 @@ public class Main {
                 }
                 Encodings.translate(inputFilePath, outputFilePath, encoding, 2, new BoundedConsistencyTranslator(), -1.0)
                         .refinementCheck(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
+                break;
+            case "smtlib":
+                if (composedTable.getContracts().size() != 2) {
+                    throw new Exception("Smtlib command must be used on two tables");
+                }
+                Encodings.translate(inputFilePath, outputFilePath, encoding, 2, new BoundedConsistencyTranslator(), -1.0)
+                        .generateSmtLibFormula(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
                 break;
             default:
                 throw new IllegalArgumentException("Type: " + typeInput + " is not supported for this file.");

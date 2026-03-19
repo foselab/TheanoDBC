@@ -239,7 +239,7 @@ public class Translator<T extends Table2Z3Visitor> {
         // Useless testing refinement if the conditions have contradictions
         wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
         wt.write("\tprint(\"contradictions\")\n");
-        wt.write("\texit()\n");
+        wt.write("\texit()\n\n");
         //wt.write("print(\"Couldn't find contradictions.\")\n\n");
         
         // Refinement conditions
@@ -253,7 +253,7 @@ public class Translator<T extends Table2Z3Visitor> {
         
         // Check refinement condition on assumptions
         wt.write("# Check refinement condition on assumptions\n");
-        wt.write("solver.push()\n");
+        wt.write("solver.push()\n\n");
         wt.write("solver.add(Not(refinement_A))\n");
         wt.write("res = solver.check()\n");
         wt.write("if res == sat:\n");
@@ -263,19 +263,21 @@ public class Translator<T extends Table2Z3Visitor> {
         //wt.write("\tevaluate_condition(A2, model, \"A2\")\n");
         //wt.write("\tprint_counterexample(model)\n");
         //wt.write("\tmissing_A = fix_refinement_condition(A1, A2, \"A2\")\n");
-        wt.write("\tprint(f\"no\")\n");
+        wt.write("\tprint(f\"unsafe\")\n");
+        wt.write("\tsolver.pop()\n");
         wt.write("\texit()\n");
         wt.write("elif res == unknown: \n");
         wt.write("\tprint(f\"unknown\")\n");
+        wt.write("\tsolver.pop()\n");
         wt.write("\texit()\n");
 
         //wt.write("else:\n");
         //wt.write("\tprint(f\"Assumptions: unknown.\")\n");
-        wt.write("solver.pop()\n\n");
+        wt.write("solver.pop()\n\n\n");
                 
         // Check refinement condition on guarantees
         wt.write("# Check refinement condition on guarantees\n");
-        wt.write("solver.push()\n");
+        wt.write("solver.push()\n\n");
         wt.write("solver.add(Not(refinement_G))\n");
         wt.write("res = solver.check()\n");
         wt.write("if res == sat:\n");
@@ -284,16 +286,100 @@ public class Translator<T extends Table2Z3Visitor> {
         //wt.write("\tevaluate_condition(G1, model, \"G1\")\n");
         //wt.write("\tevaluate_condition(G2, model, \"G2\")\n");
         //wt.write("\tprint_counterexample(model)\n");
-        wt.write("\tprint(f\"no\")\n");
+        wt.write("\tprint(f\"unsafe\")\n");
+        wt.write("\tsolver.pop()\n");
         wt.write("\texit()\n");
         wt.write("elif res == unknown: \n");
-        wt.write("\tprint(f\"unknown\") # the condition is always true\n");
+        wt.write("\tprint(f\"unknown\")\n");
+        wt.write("\tsolver.pop()\n");
+        wt.write("\texit()\n\n");
         //wt.write("else:\n");
         //wt.write("\tprint(f\"Guarantees: unknown.\")\n");
-        wt.write("solver.pop()\n\n");
         
-        wt.write("print(f\"yes\")\n");
+        wt.write("solver.pop()\n\n");
+        wt.write("print(f\"safe\")\n");
 
+		sc.close();
+		wt.close();
+	}
+	
+	public void generateSmtLibFormula(RQTable first, RQTable second) throws Exception {
+		matlabLexer lexer = new matlabLexer(new ANTLRInputStream(sc));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		matlabParser parser = new matlabParser(tokens);
+		parser.setBuildParseTree(true);
+
+		String tableName = first.getName();
+		String newTableName = second.getName();
+		
+		Variables variables = first.getVariables();
+		variables.addAll(second.getVariables());
+		
+		// get combined requirement for the two tables
+		Requirement R1 = first.getTableRequirement();
+		Requirement R2 = second.getTableRequirement();
+		
+		// convert requirements to z3formula
+		Z3Formula A1 = R1.getPrecondition().accept(z3visitor);
+		Z3Formula G1 = R1.getPostcondition().accept(z3visitor);
+		Z3Formula A2 = R2.getPrecondition().accept(z3visitor);
+		Z3Formula G2 = R2.getPostcondition().accept(z3visitor);
+		
+		String A1_str = A1.toString();
+		String G1_str = G1.toString();
+		String A2_str = A2.toString();
+		String G2_str = G2.toString();
+				
+		// import libraries
+		wt.write("from z3 import *;\n\n");
+		
+		// get tables names
+		wt.write("# Tables names\n");
+		wt.write("RQTableName=\""+tableName+"\"\n");
+		wt.write("NewRQTableName=\""+newTableName+"\"\n\n");
+
+		// creates the Z3 solver
+		wt.write("# Defines the Z3 solver\n");
+		wt.write("solver = Solver()\n");
+		wt.write("solver.set(\"timeout\", 10000) # 10 sec\n\n");
+		
+		// Define the types I and R that are used to define variables
+		wt.write("# Define I and R\n");
+		wt.write("I = IntSort()\n");
+		wt.write("R = RealSort()\n\n");
+		
+		// visits the requirements table and creates a String that defines the variables
+		// to be used in the encoding
+		wt.write("# Signal variables definition\n");
+		wt.write(new DefineVariablesVisitor().visit(variables) + "\n");
+
+        // Contracts
+        wt.write("# Contracts\n");
+        wt.write("A1="+A1_str+"\n");
+        wt.write("A2="+A2_str+"\n");
+        wt.write("G1="+G1_str+"\n");
+        wt.write("G2="+G2_str+"\n\n");
+        
+        // Refinement conditions
+        wt.write("# Refinement conditions \n");
+        wt.write("refinement_A=Implies(A1,A2)\n");
+        wt.write("refinement_G=Implies(G2,G1)\n\n");
+        
+        // Constraints
+        wt.write("solver.push()\n");
+
+        wt.write("# Constraint \n");
+        wt.write("solver.add(A1==True)\n\n");
+        
+        // Print smtlib formula
+        wt.write("# Generate smtlib formula \n");
+        wt.write("solver.add(Not(And(refinement_A,refinement_G)))\n");
+		wt.write("print('(set-logic ALL)')\n");
+		wt.write("print('(set-option :timeout 10000)')\n");
+		wt.write("print(solver.sexpr())\n");
+		wt.write("print('(check-sat)')\n\n");
+        wt.write("solver.pop()\n");
+        
 		sc.close();
 		wt.close();
 	}
