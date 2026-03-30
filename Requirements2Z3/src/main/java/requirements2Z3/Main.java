@@ -69,6 +69,7 @@ public class Main {
         options.addOption(Option.builder("e").longOpt("encoding").desc("encoding one among BeArFs | BeArVs | BeUfFs | BeUfVs | UeArFs | UeArVs | UeUfFs | UeUfVs").hasArg().build());
         options.addOption(Option.builder("b").longOpt("bound").desc("the bound").hasArg().build());
         options.addOption(Option.builder("a").longOpt("all").desc("compose all tables").hasArg(false).build());
+        options.addOption(Option.builder("s").longOpt("single refinement check").desc("single refinement check").hasArg(false).build());
         
         return options;
     }
@@ -86,6 +87,7 @@ public class Main {
         String encoding = cmd.getOptionValue("e", "BeUfFs"); // BeUfFs used as default for refinement
         String typeInput = cmd.getOptionValue("t");
         boolean all = cmd.hasOption("a");
+        boolean singleRefinementCheck = cmd.hasOption("s");
         String boundValue = cmd.getOptionValue("b");
         int bound = (boundValue != null) ? Integer.parseInt(boundValue) + 2 : -1;
 
@@ -98,7 +100,7 @@ public class Main {
         RQTable rqTable = rqParser.g().rqt;
         
         if (rqTable instanceof ComposedRQTable) {
-            handleComposedRQTable(cmd, (ComposedRQTable) rqTable, typeInput, inputFilePath, outputFilePath, encoding, all);
+            handleComposedRQTable(cmd, (ComposedRQTable) rqTable, typeInput, inputFilePath, outputFilePath, encoding, all, singleRefinementCheck);
         } else {
             handleSingleTable(cmd, rqTable, typeInput, inputFilePath, outputFilePath, encoding, bound);
         }
@@ -109,7 +111,7 @@ public class Main {
         }
     }
     
-    private static void handleComposedRQTable(CommandLine cmd, ComposedRQTable composedTable, String typeInput, String inputFilePath, String outputFilePath, String encoding, boolean all) throws Exception {
+    private static void handleComposedRQTable(CommandLine cmd, ComposedRQTable composedTable, String typeInput, String inputFilePath, String outputFilePath, String encoding, boolean all, boolean singleRefinementCheck) throws Exception {
         if (composedTable.getContracts().stream().anyMatch(table -> table.getName() == null || table.getName().isEmpty())) {
             throw new Exception("Every RQTable must have a name");
         }
@@ -124,8 +126,15 @@ public class Main {
                 if (composedTable.getContracts().size() != 2) {
                     throw new Exception("Refinement command must be used on two tables");
                 }
-                Encodings.translate(inputFilePath, outputFilePath, encoding, 2, new BoundedConsistencyTranslator(), -1.0)
-                        .refinementCheck(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
+                
+                if (singleRefinementCheck) {
+                	Encodings.translate(inputFilePath, outputFilePath, encoding, 2, new BoundedConsistencyTranslator(), -1.0)
+                    .singleRefinementCheck(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
+                } else {
+                	Encodings.translate(inputFilePath, outputFilePath, encoding, 2, new BoundedConsistencyTranslator(), -1.0)
+                    .refinementCheck(composedTable.getContracts().get(0), composedTable.getContracts().get(1));
+                }
+                
                 break;
             case "smtlib":
                 if (composedTable.getContracts().size() != 2) {

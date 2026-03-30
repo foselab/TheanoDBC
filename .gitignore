@@ -37,3 +37,4 @@ EvaluationDBC/results/*.png
 target/*
 .DS_Store
 *.smt
+*.asv
