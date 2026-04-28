@@ -114,12 +114,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		Z3Formula G1 = R1.getPostcondition().accept(z3visitor);
 		Z3Formula A2 = R2.getPrecondition().accept(z3visitor);
 		Z3Formula G2 = R2.getPostcondition().accept(z3visitor);
-		
-		String A1_str = A1.toString();
-		String G1_str = G1.toString();
-		String A2_str = A2.toString();
-		String G2_str = G2.toString();
-		
+				
 //		String A1inA2 = Z3Formula.getImplies(A1, A2).toString(); // A1 ⇒ A2
 //		String G2inG1 = Z3Formula.getImplies(G2, G1).toString(); // G2 ⇒ G1
 		
@@ -147,100 +142,100 @@ public class Translator<T extends Table2Z3Visitor> {
 		wt.write(new DefineVariablesVisitor().visit(variables) + "\n");
 
 		// Function to print the counter example
-		wt.write("# Utility function\n");
-        wt.write("def print_counterexample(model):\n");
-        wt.write("\tprint(\"-\" * 40)\n");
-        wt.write("\tprint(\"Counterexample\")\n");
-        wt.write("\tprint(\"-\" * 40)\n");
-        wt.write("\tfor v in model:\n");
-        wt.write("\t\tif v.name() != \"tau\":\n");
-        wt.write("\t\t\tprint(str(v) + \" = \" + str(model[v]))\n");
-        wt.write("\tprint(\"\")\n\n");
+		// wt.write("# Utility function\n");
+        // wt.write("def print_counterexample(model):\n");
+        // wt.write("\tprint(\"-\" * 40)\n");
+        // wt.write("\tprint(\"Counterexample\")\n");
+        // wt.write("\tprint(\"-\" * 40)\n");
+        // wt.write("\tfor v in model:\n");
+        // wt.write("\t\tif v.name() != \"tau\":\n");
+        // wt.write("\t\t\tprint(str(v) + \" = \" + str(model[v]))\n");
+        // wt.write("\tprint(\"\")\n\n");
         
         // Function to evaluate conditions using a model
-        wt.write("# Function to evaluate conditions using a model\n");
-        wt.write("def evaluate_condition(condition, model, name):\n");
-        wt.write("\t# Dynamically extract variable-value pairs from the model, excluding 'tau'\n");
-        wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name()!='tau' and d.name()!='div0' and d.name()!='mod0' and d.name()[0].isalnum()}\n");
-        // wt.write("\tprint(\"Variable values:\", variable_values)\n\n");
-        wt.write("\t# Substitute values dynamically\n");
-        wt.write("\tsubstituted_condition = substitute(\n");
-        wt.write("\t\tcondition,\n");
-        wt.write("\t\t*[(eval(var_name), variable_values[var_name]) for var_name in variable_values]\n");
-        wt.write("\t)\n\n");
-        //wt.write("\tprint(f\"{name} = {substituted_condition}\")\n");
-        wt.write("\t# Simplified condition\n");
-        wt.write("\tsimplified_condition = simplify(substituted_condition)\n");
-        wt.write("\t# Evaluate the condition\n");
-        wt.write("\tcondition_result = is_true(simplified_condition)\n");
-        wt.write("\tprint(f\"{name} = {condition_result}\")\n\n");
-        wt.write("\treturn variable_values, condition_result\n\n");
+        // wt.write("# Function to evaluate conditions using a model\n");
+        // wt.write("def evaluate_condition(condition, model, name):\n");
+        // wt.write("\t# Dynamically extract variable-value pairs from the model, excluding 'tau'\n");
+        // wt.write("\tvariable_values = {d.name(): model[d] for d in model if d.name()!='tau' and d.name()!='div0' and d.name()!='mod0' and d.name()[0].isalnum()}\n");
+        // // wt.write("\tprint(\"Variable values:\", variable_values)\n\n");
+        // wt.write("\t# Substitute values dynamically\n");
+        // wt.write("\tsubstituted_condition = substitute(\n");
+        // wt.write("\t\tcondition,\n");
+        // wt.write("\t\t*[(eval(var_name), variable_values[var_name]) for var_name in variable_values]\n");
+        // wt.write("\t)\n\n");
+        // //wt.write("\tprint(f\"{name} = {substituted_condition}\")\n");
+        // wt.write("\t# Simplified condition\n");
+        // wt.write("\tsimplified_condition = simplify(substituted_condition)\n");
+        // wt.write("\t# Evaluate the condition\n");
+        // wt.write("\tcondition_result = is_true(simplified_condition)\n");
+        // wt.write("\tprint(f\"{name} = {condition_result}\")\n\n");
+        // wt.write("\treturn variable_values, condition_result\n\n");
         
         // Contradictions check
-        wt.write("# Function to find contradictions\n");
-        wt.write("def contradictions(condition, name, details=False):\n");
-        wt.write("\tglobal solver\n");
-        wt.write("\tsolver.push()\n");
-        wt.write("\tsolver.add(condition)\n");
-        wt.write("\tres = solver.check()\n");
-        wt.write("\tif details:\n");
-        wt.write("\t\tif res == sat: \n");
-        wt.write("\t\t\tprint(f\"{name} has no contradictions.\")\n");
-        wt.write("\t\telif res == unsat:\n");
-        wt.write("\t\t\tprint(f\"{name} has contradictions.\")\n");
-        wt.write("\t\telse:\n");
-        wt.write("\t\t\tprint(f\"{name}: unknown.\")\n");
-        wt.write("\tsolver.pop()\n");
-        wt.write("\treturn res == unsat\n\n");
+        // wt.write("# Function to find contradictions\n");
+        // wt.write("def contradictions(condition, name, details=False):\n");
+        // wt.write("\tglobal solver\n");
+        // wt.write("\tsolver.push()\n");
+        // wt.write("\tsolver.add(condition)\n");
+        // wt.write("\tres = solver.check()\n");
+        // wt.write("\tif details:\n");
+        // wt.write("\t\tif res == sat: \n");
+        // wt.write("\t\t\tprint(f\"{name} has no contradictions.\")\n");
+        // wt.write("\t\telif res == unsat:\n");
+        // wt.write("\t\t\tprint(f\"{name} has contradictions.\")\n");
+        // wt.write("\t\telse:\n");
+        // wt.write("\t\t\tprint(f\"{name}: unknown.\")\n");
+        // wt.write("\tsolver.pop()\n");
+        // wt.write("\treturn res == unsat\n\n");
         
         // Missing assertions
-        wt.write("# Function to find missing elements in a refinement condition\n");
-        wt.write("def fix_refinement_condition(source, target, name):\n");
-        wt.write("\tsolver = Solver()\n");
-        wt.write("\tupdated_target = target  # Start with the original target\n\n");
-        wt.write("\twhile True:\n");
-        wt.write("\t\tsolver.push()\n");
-        wt.write("\t\tsolver.add(source, Not(updated_target))  # Check source => target\n");
-        wt.write("\t\tif solver.check() == sat:\n");
-        wt.write("\t\t\tmodel = solver.model()\n");
-        wt.write("\t\t\tprint(f\"Refinement failed for {name}, finding missing terms...\")\n\n");
-        wt.write("\t\t\t# Find missing terms in the source that were true in the counterexample\n");
-        wt.write("\t\t\tmissing_terms = []\n");
-        wt.write("\t\t\tfor term in source.children():\n");
-        wt.write("\t\t\t\tif model.evaluate(term):\n");
-        wt.write("\t\t\t\t\tmissing_terms.append(term)\n\n");
-        wt.write("\t\t\tif not missing_terms:\n");
-        wt.write("\t\t\t\tprint(f\"No missing terms found for {name}, something is wrong.\")\n");
-        wt.write("\t\t\t\tbreak\n\n");
-        wt.write("\t\t\t# Add missing terms to the target\n");
-        wt.write("\t\t\tupdated_target = Or(updated_target, Or(*missing_terms))\n");
-        wt.write("\t\t\tprint(f\"Missing this assertion or part of it: {missing_terms}.\")\n");
-        wt.write("\t\telse:\n");
-        //wt.write("\t\t\tprint(f\"{name} is now valid!\")\n");
-        wt.write("\t\t\tbreak\n");
-        wt.write("\t\tsolver.pop()\n\n");
-        wt.write("\treturn updated_target\n\n");
+        // wt.write("# Function to find missing elements in a refinement condition\n");
+        // wt.write("def fix_refinement_condition(source, target, name):\n");
+        // wt.write("\tsolver = Solver()\n");
+        // wt.write("\tupdated_target = target  # Start with the original target\n\n");
+        // wt.write("\twhile True:\n");
+        // wt.write("\t\tsolver.push()\n");
+        // wt.write("\t\tsolver.add(source, Not(updated_target))  # Check source => target\n");
+        // wt.write("\t\tif solver.check() == sat:\n");
+        // wt.write("\t\t\tmodel = solver.model()\n");
+        // wt.write("\t\t\tprint(f\"Refinement failed for {name}, finding missing terms...\")\n\n");
+        // wt.write("\t\t\t# Find missing terms in the source that were true in the counterexample\n");
+        // wt.write("\t\t\tmissing_terms = []\n");
+        // wt.write("\t\t\tfor term in source.children():\n");
+        // wt.write("\t\t\t\tif model.evaluate(term):\n");
+        // wt.write("\t\t\t\t\tmissing_terms.append(term)\n\n");
+        // wt.write("\t\t\tif not missing_terms:\n");
+        // wt.write("\t\t\t\tprint(f\"No missing terms found for {name}, something is wrong.\")\n");
+        // wt.write("\t\t\t\tbreak\n\n");
+        // wt.write("\t\t\t# Add missing terms to the target\n");
+        // wt.write("\t\t\tupdated_target = Or(updated_target, Or(*missing_terms))\n");
+        // wt.write("\t\t\tprint(f\"Missing this assertion or part of it: {missing_terms}.\")\n");
+        // wt.write("\t\telse:\n");
+        // //wt.write("\t\t\tprint(f\"{name} is now valid!\")\n");
+        // wt.write("\t\t\tbreak\n");
+        // wt.write("\t\tsolver.pop()\n\n");
+        // wt.write("\treturn updated_target\n\n");
 
         // Contracts
         wt.write("# Contracts\n");
-        wt.write("A1="+A1_str+"\n");
-        wt.write("A2="+A2_str+"\n");
-        wt.write("G1="+G1_str+"\n");
-        wt.write("G2="+G2_str+"\n\n");
+        wt.write("A1="+A1.toString()+"\n");
+        wt.write("A2="+A2.toString()+"\n");
+        wt.write("G1="+G1.toString()+"\n");
+        wt.write("G2="+G2.toString()+"\n\n");
         
         // Check if the conditions have contradictions
-        wt.write("# Check contradictions on requirements \n");
-        //wt.write("print(\"Checking contradictions in the requirements...\")\n");
-        wt.write("A1_sat=contradictions(A1, \"A1\", False)\n");
-        wt.write("A2_sat=contradictions(A2, \"A2\", False)\n");
-        wt.write("G1_sat=contradictions(G1, \"G1\", False)\n");
-        wt.write("G2_sat=contradictions(G2, \"G2\", False)\n\n");
+        // wt.write("# Check contradictions on requirements \n");
+        // //wt.write("print(\"Checking contradictions in the requirements...\")\n");
+        // wt.write("A1_sat=contradictions(A1, \"A1\", False)\n");
+        // wt.write("A2_sat=contradictions(A2, \"A2\", False)\n");
+        // wt.write("G1_sat=contradictions(G1, \"G1\", False)\n");
+        // wt.write("G2_sat=contradictions(G2, \"G2\", False)\n\n");
         
         // Useless testing refinement if the conditions have contradictions
-        wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
-        wt.write("\tprint(\"contradictions\")\n");
-        wt.write("\texit()\n\n");
-        //wt.write("print(\"Couldn't find contradictions.\")\n\n");
+        // wt.write("if(A1_sat or A2_sat or G1_sat or G2_sat):\n");
+        // wt.write("\tprint(\"contradictions\")\n");
+        // wt.write("\texit()\n\n");
+        // //wt.write("print(\"Couldn't find contradictions.\")\n\n");
         
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -249,7 +244,7 @@ public class Translator<T extends Table2Z3Visitor> {
         
         // Constraints
         wt.write("# Constraint \n");
-        wt.write("solver.add(A1==True)\n\n");
+        wt.write("solver.add(A1)\n\n");
         
         // Check refinement condition on assumptions
         wt.write("# Check refinement condition on assumptions\n");
@@ -324,12 +319,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		Z3Formula G1 = R1.getPostcondition().accept(z3visitor);
 		Z3Formula A2 = R2.getPrecondition().accept(z3visitor);
 		Z3Formula G2 = R2.getPostcondition().accept(z3visitor);
-		
-		String A1_str = A1.toString();
-		String G1_str = G1.toString();
-		String A2_str = A2.toString();
-		String G2_str = G2.toString();
-				
+						
 		// import libraries
 		wt.write("from z3 import *;\n\n");
 		
@@ -355,10 +345,10 @@ public class Translator<T extends Table2Z3Visitor> {
 
         // Contracts
         wt.write("# Contracts\n");
-        wt.write("A1="+A1_str+"\n");
-        wt.write("A2="+A2_str+"\n");
-        wt.write("G1="+G1_str+"\n");
-        wt.write("G2="+G2_str+"\n\n");
+        wt.write("A1="+A1.toString()+"\n");
+        wt.write("A2="+A2.toString()+"\n");
+        wt.write("G1="+G1.toString()+"\n");
+        wt.write("G2="+G2.toString()+"\n\n");
         
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -369,13 +359,13 @@ public class Translator<T extends Table2Z3Visitor> {
 
         // Constraints
         wt.write("# Constraint \n");
-        wt.write("solver.add(A1==True)\n");
+        wt.write("solver.add(A1)\n");
         wt.write("solver.add(Not(And(refinement_A,refinement_G)))\n\n");
 
         // Print smtlib formula
         wt.write("# Generate smtlib formula \n");
 		wt.write("print('(set-logic ALL)')\n");
-		wt.write("print('(set-option :timeout 10000)')\n");
+		//wt.write("print('(set-option :timeout 10000)')\n");
 		wt.write("print(solver.sexpr())\n");
 		wt.write("print('(check-sat)')\n\n");
         wt.write("solver.pop()\n");
@@ -405,12 +395,7 @@ public class Translator<T extends Table2Z3Visitor> {
 		Z3Formula G1 = R1.getPostcondition().accept(z3visitor);
 		Z3Formula A2 = R2.getPrecondition().accept(z3visitor);
 		Z3Formula G2 = R2.getPostcondition().accept(z3visitor);
-		
-		String A1_str = A1.toString();
-		String G1_str = G1.toString();
-		String A2_str = A2.toString();
-		String G2_str = G2.toString();
-				
+						
 		// import libraries
 		wt.write("from z3 import *;\n\n");
 		
@@ -436,10 +421,10 @@ public class Translator<T extends Table2Z3Visitor> {
 
         // Contracts
         wt.write("# Contracts\n");
-        wt.write("A1="+A1_str+"\n");
-        wt.write("A2="+A2_str+"\n");
-        wt.write("G1="+G1_str+"\n");
-        wt.write("G2="+G2_str+"\n\n");
+        wt.write("A1="+A1.toString()+"\n");
+        wt.write("A2="+A2.toString()+"\n");
+        wt.write("G1="+G1.toString()+"\n");
+        wt.write("G2="+G2.toString()+"\n\n");
         
         // Refinement conditions
         wt.write("# Refinement conditions \n");
@@ -450,7 +435,7 @@ public class Translator<T extends Table2Z3Visitor> {
 
         // Constraints
         wt.write("# Constraint \n");
-        wt.write("solver.add(A1==True)\n");
+        wt.write("solver.add(A1)\n");
         wt.write("solver.add(Not(And(refinement_A,refinement_G)))\n\n");
         
         // Check refinement condition
