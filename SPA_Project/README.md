@@ -1,4 +1,4 @@
-# Theano
+# SPA Project
 
 _Theano_ is a tool that checks the _completeness_ and _consistency_ of Requirements Tables.
 It also has _composition_ and _refinement_ operations.
