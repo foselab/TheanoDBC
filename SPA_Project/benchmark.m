@@ -1,9 +1,9 @@
 function print_statistics(mean, median, std, min, max)
-    fprintf('\tAverage: %.2f\n', mean);
-    fprintf('\tMedian: %.2f\n', median);
-    fprintf('\tStandard Deviation: %.2f\n', std);
-    fprintf('\tMin: %.2f\n', min);
-    fprintf('\tMax: %.2f\n', max);
+    fprintf('\tAverage: %.3f\n', mean);
+    fprintf('\tMedian: %.3f\n', median);
+    fprintf('\tStandard Deviation: %.3f\n', std);
+    fprintf('\tMin: %.3f\n', min);
+    fprintf('\tMax: %.3f\n', max);
 end
 
 function print_boxplot(filename, d, labels, fig_title)
@@ -102,7 +102,7 @@ stds = std(data); stds_eul = std(data_eul);
 mins = min(data); mins_eul = min(data_eul);
 maxs = max(data); maxs_eul = max(data_eul);
 
-labels = {'Theano DC (s)', 'Theano DC (u)', 'Theano SC (s)', 'Theano SC (u)', 'z3 (s)', 'z3 (u)', 'cvc5 (s)', 'cvc5 (u)'};
+labels = {'DC (s)', 'DC (u)', 'SC (s)', 'SC (u)', 'z3 (s)', 'z3 (u)', 'cvc5 (s)', 'cvc5 (u)'};
 
 if ~all(isnan(means(:)))
     fprintf('Statistics for each experiment (EUL excluded):\n');
