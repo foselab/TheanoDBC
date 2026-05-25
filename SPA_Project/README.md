@@ -9,10 +9,10 @@ OTA updates.
 
 In this project we use only the _substitutability_ check.
 
-## Requirements
+## Requirements for command line
 
-- [z3](https://github.com/Z3Prover/z3)
-- [cvc5](https://cvc5.github.io/docs/cvc5-1.0.0/installation/installation.html)
+- [z3](https://github.com/Z3Prover/z3) 4.15.4
+- [cvc5](https://cvc5.github.io/docs/cvc5-1.0.0/installation/installation.html) 1.3.2
 
 ## Install
 
