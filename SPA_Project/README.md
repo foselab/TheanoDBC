@@ -48,6 +48,12 @@ The script execute 20 OTA updates for 50 times per each strategy (i.e., double-c
 
 Each OTA update is an RT from the `LM_Challenges` folder in this repository.
 
+To keep the generated files in `LM_Challenges` folder add the -k option. To modify the number of iterations, specify it with the -i option. For example:
+
+```terminal
+bash run.sh -k -i 100
+```
+
 ## Results
 The results are saved in the `results` folder.
 To visualize the boxplots, open [MATLAB Simulink](https://www.mathworks.com/help/install/ug/install-products-with-internet-connection.html) and run

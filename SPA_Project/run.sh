@@ -12,9 +12,77 @@ fi
 # Command
 cmd=(java -jar ../Theano.jar)
 
+print_usage() {
+    cat <<EOF
+Usage: bash run.sh [OPTIONS]
+
+Options:
+  -k, --keep             keep generated files in LM_Challenges folder on exit
+  -i N, --iterations N   run each OTA N times (default: 50)
+  -h, --help             show this help message
+EOF
+}
+
 # SETTINGS
 CLEAN_ON_EXIT=true
 ITERATIONS=50
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -k|--keep)
+            CLEAN_ON_EXIT=false
+            shift
+            ;;
+        -i)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                echo "Error: -i requires a numeric argument."
+                print_usage
+                exit 1
+            fi
+            if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+                echo "Error: iterations must be a positive integer."
+                exit 1
+            fi
+            ITERATIONS="$2"
+            shift 2
+            ;;
+        --iterations)
+            if [[ -z "$2" || "$2" == -* ]]; then
+                echo "Error: --iterations requires a numeric argument."
+                print_usage
+                exit 1
+            fi
+            if ! [[ "$2" =~ ^[0-9]+$ ]]; then
+                echo "Error: iterations must be a positive integer."
+                exit 1
+            fi
+            ITERATIONS="$2"
+            shift 2
+            ;;
+        --iterations=*)
+            ITERATIONS="${1#*=}"
+            if ! [[ "$ITERATIONS" =~ ^[0-9]+$ ]]; then
+                echo "Error: iterations must be a positive integer."
+                exit 1
+            fi
+            shift
+            ;;
+        -h|--help)
+            print_usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            print_usage
+            exit 1
+            ;;
+    esac
+done
+
+if [[ "$ITERATIONS" -lt 1 ]]; then
+    echo "Error: iterations must be at least 1."
+    exit 1
+fi
 
 # PATHS TO SAVE RESULTS
 RESULT_PATH="./results"
